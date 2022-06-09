@@ -55,9 +55,29 @@ MenuManager:
 		orientation: 'vertical'
 		FileChooserListView:
 			id: filechooser
+			on_selection: mesh_widget.selected(filechooser.selection)
 		Button:
 			text: "select file"
 			on_release: root.dismiss()
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Load"
+                on_release: root.load(filechooser.path, filechooser.selection)
 
 <MeshWindow>:
 	name: "second"
@@ -74,9 +94,10 @@ MenuManager:
 			Label:
 				text: "Limit Layer"
 			TextInput:
+				id: limit_layer
 			Button:
 				text:"Load"
-				on_release: Factory.MyPopup().open()
+				on_release: root.show_load()
 
 			Label:
 				text: "Wells"
