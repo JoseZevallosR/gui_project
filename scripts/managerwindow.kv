@@ -1,0 +1,109 @@
+#:import Factory kivy.factory.Factory
+
+MenuManager:
+	ModelWindow:
+	MeshWindow:
+	
+<ModelWindow>:
+	name: "first"
+
+	BoxLayout:
+		padding : 10
+
+		orientation : 'vertical'
+		size : root.width , root.height
+
+		Image:
+			source: '../img/regional_model.PNG'
+		GridLayout:
+			cols : 2
+			row_force_default: True
+			row_default_height: 30
+			Label:
+				text: "Model Name"
+
+			TextInput:
+
+			Label:
+				text: "EPCG"
+
+			TextInput:
+
+			Label:
+				text: "Time Unit"
+
+			TextInput:
+
+			Label:
+				text: "Starting Date"
+
+			TextInput:
+
+		Button:
+			text: "Create"
+
+		Button:
+			text: "Mesh"
+			on_release: 
+				app.root.current = "second"
+				root.manager.transition.direction = "left"
+
+<MyPopup@Popup>
+	auto_dismiss: False
+	title: "Load file"
+	BoxLayout:
+		orientation: 'vertical'
+		FileChooserListView:
+			id: filechooser
+		Button:
+			text: "select file"
+			on_release: root.dismiss()
+
+<MeshWindow>:
+	name: "second"
+
+	BoxLayout:
+		orientation: "vertical"
+		size : root.width , root.height
+
+		GridLayout:
+			cols : 3
+			row_force_default: True
+			row_default_height: 30
+
+			Label:
+				text: "Limit Layer"
+			TextInput:
+			Button:
+				text:"Load"
+				on_release: Factory.MyPopup().open()
+
+			Label:
+				text: "Wells"
+			TextInput:
+			Button:
+				text:"Load"
+
+			Label:
+				text: "Rivers"
+			TextInput:
+			Button:
+				text:"Load"
+
+			Label:
+				text: "Drains"
+			TextInput:
+			Button:
+				text:"Load"
+
+
+		Button:
+			text: "Generate Mesh"
+
+		Button:
+			text: "Save"
+		Button:
+			text: "Model"
+			on_release: 
+				app.root.current = "first"
+				root.manager.transition.direction = "right"
