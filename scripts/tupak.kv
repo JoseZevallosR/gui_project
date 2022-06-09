@@ -1,0 +1,44 @@
+<Button>:
+	size_hint : None, None
+	width: 150
+	heigth: 50
+	pos_hint : {"x":0.3, 'top' : 0.9,"y":0.5}
+
+<loging>:
+	BoxLayout:
+		padding : 10
+
+		orientation : 'vertical'
+		size : root.width , root.height
+
+		Image:
+			source: '../img/regional_model.PNG'
+		GridLayout:
+			cols : 2
+			row_force_default: True
+			row_default_height: 30
+			Label:
+				text: "Model Name"
+
+			TextInput:
+
+			Label:
+				text: "EPCG"
+
+			TextInput:
+
+			Label:
+				text: "Time Unit"
+
+			TextInput:
+
+			Label:
+				text: "Starting Date"
+
+			TextInput:
+
+		Button:
+			text: "Create"
+			
+
+
