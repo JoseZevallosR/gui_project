@@ -16,7 +16,15 @@ class LoadDialog(Widget):
 	load = ObjectProperty(None)
 	cancel = ObjectProperty(None)
 
-	
+class SaveDialog(Widget):
+    save = ObjectProperty(None)
+    text_input = ObjectProperty(None)
+    cancel = ObjectProperty(None)
+
+class ProjectDialog(Widget):
+    save = ObjectProperty(None)
+    text_input = ObjectProperty(None)
+    cancel = ObjectProperty(None)
 
 
 tupackv = Builder.load_file('tupacbar.kv')
@@ -33,8 +41,25 @@ class TupacMaster(BoxLayout):
 		self.id_input_text=''
 
 
-	def create_project(self):
-		pass
+	def create_project(self,path,filename):
+		project_name = os.path.join(path, filename[0])
+
+		if not os.path.isdir(project_name):
+		    os.makedirs(project_name, exist_ok=True)
+
+		sub_directories = ['/shps','/rst','/model','/json','/vtk']
+
+		directories = [Path(project_name+folder) for folder in sub_directories]
+		for workspace in directories:
+		    workspace.mkdir(exist_ok=True)
+		    
+		self.dismiss_popup()
+
+	def show_project(self):
+		content = ProjectDialog(save=self.save, cancel=self.dismiss_popup)
+		self._popup = Popup(title="Save file", content=content,
+                            size_hint=(0.9, 0.9))
+		self._popup.open()
 
 	def dismiss_popup(self):
 		self._popup.dismiss()
@@ -47,6 +72,19 @@ class TupacMaster(BoxLayout):
 	def load(self, path, filename):
 		self.ids[self.id_input_text].text=os.path.join(path, filename[0])
 		self.dismiss_popup()
+
+	def show_save(self):
+		content = SaveDialog(save=self.save, cancel=self.dismiss_popup)
+		self._popup = Popup(title="Save file", content=content,
+                            size_hint=(0.9, 0.9))
+		self._popup.open()
+
+	def save(self, path, filename):
+		with open(os.path.join(path, filename), 'w') as stream:
+			stream.write(self.text_input.text)
+
+		self.dismiss_popup()
+
 
 	def mesh(self):
 		
