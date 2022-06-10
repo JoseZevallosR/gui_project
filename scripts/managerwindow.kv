@@ -48,18 +48,6 @@ MenuManager:
 				app.root.current = "second"
 				root.manager.transition.direction = "left"
 
-<MyPopup@Popup>
-	auto_dismiss: False
-	title: "Load file"
-	BoxLayout:
-		orientation: 'vertical'
-		FileChooserListView:
-			id: filechooser
-			on_selection: mesh_widget.selected(filechooser.selection)
-		Button:
-			text: "select file"
-			on_release: root.dismiss()
-
 <LoadDialog>:
     BoxLayout:
         size: root.size
@@ -108,8 +96,10 @@ MenuManager:
 			Label:
 				text: "Rivers"
 			TextInput:
+				id: river_layer
 			Button:
 				text:"Load"
+				on_release: root.show_load()
 
 			Label:
 				text: "Drains"
@@ -120,6 +110,7 @@ MenuManager:
 
 		Button:
 			text: "Generate Mesh"
+			on_release: root.mesh()
 
 		Button:
 			text: "Save"
