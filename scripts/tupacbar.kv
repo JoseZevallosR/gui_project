@@ -97,6 +97,7 @@
 						id: well_layer
 					Button:
 						text:"Load"
+						on_release: root.show_load('well_layer')
 
 					Label:
 						text: "Rivers"
@@ -104,13 +105,15 @@
 						id: river_layer
 					Button:
 						text:"Load"
-						on_release: root.show_load()
+						on_release: root.show_load('river_layer')
 
 					Label:
 						text: "Drains"
 					TextInput:
+						id : drain_layer
 					Button:
 						text:"Load"
+						on_release: root.show_load('drain_layer')
 
 
 				Button:

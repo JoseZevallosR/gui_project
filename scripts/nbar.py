@@ -28,7 +28,6 @@ class TupacMaster(BoxLayout):
 	text_input = ObjectProperty(None)
 
 	#Review this part to pass the id of the input text
-	#id_input_text = StringProperty(None)
 	def __init__(self,**kwargs):
 		super().__init__(**kwargs)
 		self.id_input_text=''
@@ -46,9 +45,7 @@ class TupacMaster(BoxLayout):
 		self._popup.open()
 
 	def load(self, path, filename):
-		self.ids.limit_layer.text=os.path.join(path, filename[0])
-		print(self.ids[self.id_input_text].text)	
-		#print(id_inputext)	
+		self.ids[self.id_input_text].text=os.path.join(path, filename[0])
 		self.dismiss_popup()
 
 	def mesh(self):
