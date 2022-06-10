@@ -1,0 +1,109 @@
+BoxLayout:
+	orientation: 'vertical'
+
+	MDToolbar:
+		title: "Tupac Flow"
+
+	MDBottomNavigation:
+
+		MDBottomNavigationItem:
+			name: 'screen 1'
+			text: 'Model'
+			icon: 'folder'
+
+
+			BoxLayout:
+				padding : 10
+
+				orientation : 'vertical'
+				size : root.width , root.height
+
+				Image:
+					source: '../img/regional_model.PNG'
+				GridLayout:
+					cols : 2
+					row_force_default: True
+					row_default_height: 30
+					Label:
+						text: "Model Name"
+
+					TextInput:
+
+					Label:
+						text: "EPCG"
+
+					TextInput:
+
+					Label:
+						text: "Time Unit"
+
+					TextInput:
+
+					Label:
+						text: "Starting Date"
+
+					TextInput:
+
+				Button:
+					text: "Create"
+		
+
+		MDBottomNavigationItem:
+			name: 'screen 2'
+			text: 'Voronoi Mesh'
+			icon: 'city'
+
+			BoxLayout:
+				orientation: "vertical"
+				size : root.width , root.height
+
+				GridLayout:
+					cols : 3
+					row_force_default: True
+					row_default_height: 30
+
+					Label:
+						text: "Limit Layer"
+					TextInput:
+						id: limit_layer
+					Button:
+						text:"Load"
+						on_release: root.show_load()
+
+					Label:
+						text: "Wells"
+					TextInput:
+					Button:
+						text:"Load"
+
+					Label:
+						text: "Rivers"
+					TextInput:
+						id: river_layer
+					Button:
+						text:"Load"
+						on_release: root.show_load()
+
+					Label:
+						text: "Drains"
+					TextInput:
+					Button:
+						text:"Load"
+
+
+				Button:
+					text: "Generate Mesh"
+					on_release: root.mesh()
+
+				Button:
+					text: "Save"
+
+
+		MDBottomNavigationItem:
+			name: 'screen 3'
+			text: 'Vertical Mesh'
+			icon: 'border-vertical'
+
+			MDLabel:
+				text: 'Insta'
+				halign: 'center'
