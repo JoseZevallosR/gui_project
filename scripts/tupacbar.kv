@@ -45,7 +45,7 @@
 					row_force_default: True
 					row_default_height: 30
 					Label:
-						text: "Model Name"
+						text: "Project Name"
 
 					TextInput:
 
@@ -65,7 +65,8 @@
 					TextInput:
 
 				Button:
-					text: "Create"
+					text: "Create Project"
+					on_release: root.create_project()
 		
 
 		MDBottomNavigationItem:
@@ -88,11 +89,12 @@
 						id: limit_layer
 					Button:
 						text:"Load"
-						on_release: root.show_load()
+						on_release: root.show_load('limit_layer')
 
 					Label:
 						text: "Wells"
 					TextInput:
+						id: well_layer
 					Button:
 						text:"Load"
 
