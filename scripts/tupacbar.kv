@@ -96,18 +96,23 @@
 
 
 			BoxLayout:
-				padding : 10
+				padding : 20
+				spacing: 20
 
 				orientation : 'vertical'
 				size : root.width , root.height
 
 				Image:
 					source: '../img/regional_model.PNG'
+
+
+				
+
 				GridLayout:
 					cols : 2
 					row_force_default: True
 					row_default_height: 30
-					
+					spacing: 2
 
 					Label:
 						text: "EPCG"
@@ -126,7 +131,10 @@
 
 				Button:
 					text: "Create Project"
+					size_hint : .3,0.3
+					pos_hint: {'center_x':0.5,'center_y':0.1}
 					on_release: root.show_project()
+				
 		
 
 		MDBottomNavigationItem:
@@ -135,13 +143,19 @@
 			icon: 'city'
 
 			BoxLayout:
+				padding : 20
 				orientation: "vertical"
 				size : root.width , root.height
 
+				Label:
+					text: "Geometry Constraints"
+
 				GridLayout:
-					cols : 3
-					row_force_default: True
+					cols : 3					
 					row_default_height: 30
+					row_force_default: True
+					center : root.width/2, root.height/2
+					spacing: 2
 
 					Label:
 						text: "Limit Layer"
@@ -175,13 +189,66 @@
 						text:"Load"
 						on_release: root.show_load('drain_layer')
 
+				Widget:
 
-				Button:
-					text: "Generate Mesh"
-					on_release: root.mesh()
+				GridLayout:
+					cols : 2
+					size_hint : .6,0.9
+					pos_hint: {'center_x':0.55}
 
-				Button:
-					text: "Save"
+					row_default_height: 30
+					row_force_default: True
+					
+					spacing: 2
+
+
+					Label:
+						text: 'maximum refinement'
+						size_hint : (None,None)
+						size: 200,30
+
+					TextInput:
+						id: max_ref
+						size_hint : (None,None)
+						size: 80,30
+
+					Label:
+						text: 'minimum refinement'
+						size_hint : (None,None)
+						size: 200,30
+
+					TextInput:
+						id: min_ref
+						size_hint : (None,None)
+						size: 80,30
+
+
+				GridLayout:
+					cols: 1
+					row_default_height: 30
+					row_force_default: True
+					pos_hint: {'center_x':0.65}
+
+					size_hint : .5,.5
+					spacing: 2
+					Button:
+						text: "Generate Mesh"
+						size_hint : (None,None)
+						size: 150,30
+						
+						on_release: root.mesh()
+
+					Button:
+						text: "Save"
+						size_hint : (None,None)
+						size: 150,30
+
+					Button:
+						text: "Plot"
+						size_hint : (None,None)
+						size: 150,30
+
+				Widget:
 
 
 		MDBottomNavigationItem:

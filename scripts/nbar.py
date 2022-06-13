@@ -97,6 +97,7 @@ class TupacMaster(BoxLayout):
 
 		#Open limit layers and refinement definition layers
 		#vorMesh.addLimit('basin','../examples/In/shp/Angascancha_Basin_Extension.shp')
+		
 		vorMesh.addLimit('basin',self.ids.limit_layer.text)
 		vorMesh.addLayer('facilities','../examples/In/shp/rios.shp')
 
