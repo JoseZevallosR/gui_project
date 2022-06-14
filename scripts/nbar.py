@@ -42,24 +42,26 @@ class TupacMaster(BoxLayout):
 	savefile = ObjectProperty(None)
 	text_input = ObjectProperty(None)
 
-	#Review this part to pass the id of the input text
+	#variables to move around the class
 	def __init__(self,**kwargs):
 		super().__init__(**kwargs)
-		self.id_input_text=''
+		self.id_layer_text=''
+		self.directory_path=''
 
 
 	def create_project(self,path,filename):
-		project_name = os.path.join(path, filename[0])
+		self.directory_path = os.path.join(path, filename)
 
-		if not os.path.isdir(project_name):
-		    os.makedirs(project_name, exist_ok=True)
+
+		if not os.path.isdir(self.directory_path):
+		    os.makedirs(self.directory_path, exist_ok=True)
 
 		sub_directories = ['/shps','/rst','/model','/json','/vtk']
 
-		directories = [Path(project_name+folder) for folder in sub_directories]
+		directories = [Path(self.directory_path+folder) for folder in sub_directories]
 		for workspace in directories:
 		    workspace.mkdir(exist_ok=True)
-		    
+	    
 		self.dismiss_popup()
 
 	def show_project(self):
@@ -71,13 +73,13 @@ class TupacMaster(BoxLayout):
 	def dismiss_popup(self):
 		self._popup.dismiss()
 	def show_load(self,id_layer):
-		self.id_input_text=id_layer
+		self.id_layer_text=id_layer
 		content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
 		self._popup = Popup(title="Load file", content=content,size_hint=(0.9, 0.9))
 		self._popup.open()
 
 	def load(self, path, filename):
-		self.ids[self.id_input_text].text=os.path.join(path, filename[0])
+		self.ids[self.id_layer_text].text=os.path.join(path, filename[0])
 		self.dismiss_popup()
 
 	def show_save(self):
@@ -101,12 +103,18 @@ class TupacMaster(BoxLayout):
 
 		#Define base refinement and refinement levels
 		vorMesh.defineParameters(maxRef = 500, minRef=50, stages=5)
+	
+		#Open limit layers and refinement definition layers	
+		if self.ids.limit_layer.text != '':
+			vorMesh.addLimit('Limit',self.ids.limit_layer.text)
 
-		#Open limit layers and refinement definition layers
-		#vorMesh.addLimit('basin','../examples/In/shp/Angascancha_Basin_Extension.shp')
+		if self.ids.well_layer.text != '':
+			vorMesh.addLayer('wells',self.ids.well_layer.text )
+		if self.ids.river_layer.text != '':
+			vorMesh.addLayer('rivers',self.ids.river_layer.text )
+		if self.ids.drain_layer.text != '':
+			vorMesh.addLayer('drains',self.ids.drain_layer.text )
 		
-		vorMesh.addLimit('basin',self.ids.limit_layer.text)
-		vorMesh.addLayer('facilities','../examples/In/shp/rios.shp')
 
 		#Generate point pair array
 		vorMesh.extractOrgVertices()
@@ -116,7 +124,7 @@ class TupacMaster(BoxLayout):
 		vorMesh.generateVoronoi()
 
 		#check or create an output folder
-		outPath = '../examples/out/angascancha'
+		outPath = self.directory_path+'/shps'
 
 		if os.path.isdir(outPath):
 		    print('The output folder %s exists'%outPath)
