@@ -5,9 +5,15 @@ from kivy.properties import ObjectProperty,StringProperty
 from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
 import os
+# self es para la clase que contiene el widget
+#root se dirige a la identancio principal al parent
+#app es la clase que corre todo el programa
+#ObjecProperty nos sirve para declarar objetos en el archivo .py y despues asignarle valores en el .kv
 
 #mesh functions
 import sys
+from pathlib import Path
+
 #adding path to source directory
 sys.path.insert(0, '../src')
 
@@ -22,9 +28,10 @@ class SaveDialog(Widget):
     cancel = ObjectProperty(None)
 
 class ProjectDialog(Widget):
-    save = ObjectProperty(None)
+    
     text_input = ObjectProperty(None)
     cancel = ObjectProperty(None)
+    create_project = ObjectProperty(None)
 
 
 tupackv = Builder.load_file('tupacbar.kv')
@@ -56,7 +63,7 @@ class TupacMaster(BoxLayout):
 		self.dismiss_popup()
 
 	def show_project(self):
-		content = ProjectDialog(save=self.save, cancel=self.dismiss_popup)
+		content = ProjectDialog(create_project=self.create_project, cancel=self.dismiss_popup)
 		self._popup = Popup(title="Save file", content=content,
                             size_hint=(0.9, 0.9))
 		self._popup.open()
