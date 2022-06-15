@@ -257,9 +257,18 @@
 			text: 'Vertical Mesh'
 			icon: 'border-vertical'
 
-			MDLabel:
-				text: 'Insta'
-				halign: 'center'
+			
+			BoxLayout:
+				id: box
+				size_hint_y: 0.8
+				pos_hint: {"top": 1}
+
+			BoxLayout:
+				size_hint_y: 0.2
+				TextInput:
+					id: namer
+					multiline: False
 
 				Button:
-					text: "connection"
+					text: "plot"
+					on_release: root.plot_mesh()

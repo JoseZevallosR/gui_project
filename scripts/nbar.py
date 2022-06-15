@@ -4,6 +4,7 @@ from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty,StringProperty
 from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
+from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import os
 # self es para la clase que contiene el widget
 #root se dirige a la identancio principal al parent
@@ -16,6 +17,11 @@ from pathlib import Path
 
 #adding path to source directory
 sys.path.insert(0, '../src')
+from meshProperties import mesh_shape
+
+import flopy.discretization as fgrid
+import flopy.plot as fplot
+import matplotlib.pyplot as plt
 
 # load and save dialog
 class LoadDialog(Widget):
@@ -143,8 +149,24 @@ class TupacMaster(BoxLayout):
 		#Polygons
 
 		vorMesh.getPolyAsShp('voronoiRegions',outPath+'/voronoiRegions.shp')
-		pass
+		
 
+	def plot_mesh(self):
+		#checkin mesh
+		mesh=mesh_shape('c:/Users/saulm/Documents/jose_Z/github/dev_mode/examples/out/angascancha/voronoiRegions.shp')
+		gridprops=mesh.get_gridprops_disv()
+		cell2d = gridprops['cell2d']
+		vertices = gridprops['vertices']
+		ncpl = gridprops['ncpl']
+		nvert = gridprops['nvert']
+		centroids=gridprops['centroids']
+
+		tgr = fgrid.VertexGrid(vertices, cell2d)
+		fig, ax = plt.subplots(1, 1, figsize=(15, 10))
+		pmv = fplot.PlotMapView(modelgrid=tgr)
+		pmv.plot_grid(ax=ax)
+		box = self.ids.box
+		box.add_widget(FigureCanvasKivyAgg(plt.gcf()))
 
 
 class MainApp(MDApp):
