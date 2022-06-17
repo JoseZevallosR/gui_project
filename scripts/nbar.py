@@ -5,6 +5,8 @@ from kivy.properties import ObjectProperty,StringProperty
 from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+from kivy.core.window import Window
+
 import os
 # self es para la clase que contiene el widget
 #root se dirige a la identancio principal al parent
@@ -15,6 +17,7 @@ import os
 import sys
 from pathlib import Path
 
+Window.size = (1100,700)
 #adding path to source directory
 sys.path.insert(0, '../src')
 from meshProperties import mesh_shape
