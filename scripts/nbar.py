@@ -6,6 +6,7 @@ from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 from kivy.core.window import Window
+from kivy.uix.floatlayout import FloatLayout
 
 import os
 # self es para la clase que contiene el widget
