@@ -40,7 +40,7 @@ class ProjectDialog(Widget):
     create_project = ObjectProperty(None)
 
 
-tupackv = Builder.load_file('tupacbar.kv')
+tupackv = Builder.load_file('app.kv')
 
 class TupacMaster(BoxLayout):
 
@@ -153,7 +153,7 @@ class TupacMaster(BoxLayout):
 
 	def plot_mesh(self):
 		#checkin mesh
-		mesh=mesh_shape('c:/Users/saulm/Documents/jose_Z/github/dev_mode/examples/out/angascancha/voronoiRegions.shp')
+		mesh=mesh_shape('D:/Proyectos_GitHub/dev_mode/examples/out/angascancha/voronoiRegions.shp')
 		gridprops=mesh.get_gridprops_disv()
 		cell2d = gridprops['cell2d']
 		vertices = gridprops['vertices']
