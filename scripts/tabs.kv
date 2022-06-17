@@ -1,0 +1,175 @@
+
+<LoadDialog>:
+	FileChooserI:
+		size_hint: 1,0.9
+		pos_hint: {'x':0,"y": 0.1}
+		id: filechooser
+		path: self.path_tracker
+	BoxLayout:
+
+		size_hint: 1,0.1
+    	pos_hint: {"x": 0,'y':0}
+        Button:
+        	size_hint: 0.5,1
+        	text: "Cancel"
+        	on_release: root.cancel()
+        Button:
+        	size_hint: 0.5,1
+        	text: "Load"
+            on_release: root.load(filechooser.path, filechooser.selection)
+
+<ProjectDialog>:
+	
+    text_input: text_input
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            on_selection: text_input.text = self.selection and self.selection[0] or ''
+
+        Label:
+			text: "Project name"
+			size_hint_y: None
+			height:30
+
+        TextInput:
+            id: text_input
+            size_hint_y: None
+            height: 30
+            multiline: False
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Save"
+                on_release: root.create_project(filechooser.path, text_input.text)
+
+
+<Button>:
+	size_hint: (0.1,0.1)
+
+<TextInput>:
+	size_hint: (0.3,0.1)
+
+<TupacMaster>
+	do_default_tab:False
+
+	TabbedPanelItem:
+		text: "Project"
+		FloatLayout:
+			Image:
+				source: '../img/Tupac.png'
+				pos_hint: {'x':0.5,'y':0}
+				size_hint: (0.5,1)
+				allow_stretch: True
+			Label:
+				text: "EPCG"
+				size_hint: (0.1,0.1)
+				pos_hint: {'x':0,'y':0.9}
+			TextInput:
+				pos_hint: {'x':0.1,'y':0.9}
+			Label:
+				text: "Time Unit"
+				size_hint: (0.1,0.1)
+				pos_hint: {'x':0,'y':0.8}
+			TextInput:
+				pos_hint: {'x':0.1,'y':0.8}
+			Label:
+				text: "Starting Date"
+				size_hint: (0.1,0.1)
+				pos_hint: {'x':0,'y':0.7}
+			TextInput:
+				pos_hint: {'x':0.1,'y':0.7}
+			Button:
+				text: "Create Project"
+				pos_hint: {'center_x':0.25,'center_y':0.2}
+				on_release: root.show_project()
+            	
+
+	TabbedPanelItem:
+		text: "Voronoi"
+
+		FloatLayout:
+
+			Label:
+				text: "Geometry Constraints"
+				size_hint:(0.5,0.1)
+				pos_hint: {'x':0,'y':0.9}
+			Label:
+				text: "Limit Layer"
+				size_hint: (0.1,0.1)
+				pos_hint: {'x':0,'y':0.8}
+			TextInput:
+				id: limit_layer
+				pos_hint: {'x':0.1,'y':0.8}
+			Button:
+				text: 'Load'
+				pos_hint: {'x':0.4,'y':0.8}
+				on_release: root.show_load('limit_layer')
+			Label:
+				text: "Wells"
+				size_hint: (0.1,0.1)
+				pos_hint: {'x':0,'y':0.7}
+			TextInput:
+				id: well_layer
+				pos_hint: {'x':0.1,'y':0.7}
+			Button:
+				text: 'Load'
+				pos_hint: {'x':0.4,'y':0.7}
+				on_release: root.show_load('well_layer')	
+			Label:
+				text: "Rivers"
+				size_hint: (0.1,0.1)
+				pos_hint: {'x':0,'y':0.6}
+			TextInput:
+				id: river_layer
+				pos_hint: {'x':0.1,'y':0.6}
+			Button:
+				text: 'Load'
+				pos_hint: {'x':0.4,'y':0.6}
+				on_release: root.show_load('river_layer')	
+			Label:
+				text: "Drains"
+				size_hint: (0.1,0.1)
+				pos_hint: {'x':0,'y':0.5}
+			TextInput:
+				id : drain_layer
+				pos_hint: {'x':0.1,'y':0.5}
+			Button:
+				text: 'Load'
+				pos_hint: {'x':0.4,'y':0.5}
+				on_release: root.show_load('drain_layer')	
+			Label:
+				text: 'Max refinement'
+				size_hint: (0.1,0.1)
+				pos_hint: {'x':0,'y':0.1}
+			TextInput:
+				pos_hint: {'x':0.1,'y':0.1}
+			Label:
+				text: 'Min refinement'
+				size_hint: (0.1,0.1)
+				pos_hint: {'x':0,'y':0.0}
+			TextInput:
+				pos_hint: {'x':0.1,'y':0.0}
+			Button:
+				text: 'Mesh'
+				pos_hint: {'x':0.4,'y':0.1}
+				on_release: root.mesh()
+			Button:
+				text: 'Plot'
+				pos_hint: {'x':0.4,'y':0.0}
+				on_release: root.plot_mesh()
+			BoxLayout:
+				id: boxs
+				pos_hint: {'x':0.5,'y':0}
+				size_hint: (0.5,1)
+
+	TabbedPanelItem:
+		text: 'Vertical'
