@@ -1,4 +1,15 @@
 
+<ProgresBarrDialog>
+
+	ProgressBar:
+		id: my_progress_bar
+		value:0.25
+		min:0
+		max:100
+
+		pos_hint: {"x": .2}
+		size_hint_x: 0.8
+
 <LoadDialog>:
 	FileChooserI:
 		size_hint: 1,0.9
@@ -151,17 +162,19 @@
 				size_hint: (0.1,0.1)
 				pos_hint: {'x':0,'y':0.1}
 			TextInput:
+				id: max_ref
 				pos_hint: {'x':0.1,'y':0.1}
 			Label:
 				text: 'Min refinement'
 				size_hint: (0.1,0.1)
 				pos_hint: {'x':0,'y':0.0}
 			TextInput:
+				id: min_ref
 				pos_hint: {'x':0.1,'y':0.0}
 			Button:
 				text: 'Mesh'
 				pos_hint: {'x':0.4,'y':0.1}
-				on_release: root.mesh()
+				on_release: root.doit_in_thread()#root.mesh()
 			Button:
 				text: 'Plot'
 				pos_hint: {'x':0.4,'y':0.0}

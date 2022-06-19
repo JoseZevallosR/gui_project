@@ -1,3 +1,4 @@
+import kivy
 from kivy.lang import Builder
 from kivy.app import App
 #from kivy.uix.boxlayout import BoxLayout
@@ -11,11 +12,19 @@ from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 from kivy.core.window import Window
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.widget import Widget
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.progressbar import ProgressBar
+
+
+from kivy.clock import Clock
 
 #check
 from kivy.uix.filechooser import FileChooserListView
 
 import os
+import time
+import threading
+from functools import partial
 
 #mesh functions
 import sys
@@ -30,11 +39,17 @@ import flopy.discretization as fgrid
 import flopy.plot as fplot
 import matplotlib.pyplot as plt
 
+Builder.load_file('tabs.kv')
 
 class FileChooserI(FileChooserListView):
-	path_tracker='C:/Users/saulm/Documents/jose_Z'
+	path_tracker=os.path.abspath(os.sep)#u'/'#
 	def on_submit(*args):
 		print(args[1][0])
+
+class ProgresBarrDialog(BoxLayout):
+	def __init__(self, obj, **kwargs):
+		super(ProgresBarrDialog, self).__init__(**kwargs)
+
 # load and save dialog
 class LoadDialog(FloatLayout):
 	load = ObjectProperty(None)
@@ -59,9 +74,15 @@ class TupacMaster(TabbedPanel):
 
 	#variables to move around the class
 	def __init__(self,**kwargs):
-		super().__init__(**kwargs)
+		super(TupacMaster,self).__init__(**kwargs)
+		
 		self.id_layer_text='' # path to each layer
 		self.directory_path='' #path to project directory
+		self.cell2d=0
+		self.vertices=0
+		self.ncpl = 0
+		self.nvert = 0
+		self.centroids=0
 
 	# POP UP HANDLERS 
 	def dismiss_popup(self):
@@ -97,15 +118,34 @@ class TupacMaster(TabbedPanel):
 	    
 		self.dismiss_popup()
 
+	def doit_in_thread(self):
+		#review here
+		content = ProgresBarrDialog(self)
+		self.popup = Popup(title = 'Progress Bar',content=content ,size_hint=(0.5,0.5))
 
-	def mesh(self):
-		
+		self.popup.open()
+
+		threading.Thread(target=partial(self.mesh,content, self.popup)).start()
+
+
+	def mesh(self,content,popup):
+
+		def next(dt):
+			if content.ids['my_progress_bar'].value < 100:
+				content.ids['my_progress_bar'].value +=1
+			else:				
+				self.popup.dismiss()
+				content.ids['my_progress_bar'].value=0.25
+				
+		content = content
+		self.popup = popup
+					
 		from geoVoronoi import createVoronoi
 		#Create mesh object
 		vorMesh = createVoronoi()
 
 		#Define base refinement and refinement levels
-		vorMesh.defineParameters(maxRef = 500, minRef=50, stages=5)
+		vorMesh.defineParameters(maxRef = int(self.ids.max_ref.text), minRef=int(self.ids.min_ref.text), stages=5)
 	
 		#Open limit layers and refinement definition layers	
 		if self.ids.limit_layer.text != '':
@@ -148,17 +188,21 @@ class TupacMaster(TabbedPanel):
 		vorMesh.getPolyAsShp('voronoiRegions',outPath+'/voronoiRegions.shp')
 		
 
-	def plot_mesh(self):
-		#checkin mesh
 		mesh=mesh_shape(self.directory_path+'/shps/voronoiRegions.shp')
 		gridprops=mesh.get_gridprops_disv()
-		cell2d = gridprops['cell2d']
-		vertices = gridprops['vertices']
-		ncpl = gridprops['ncpl']
-		nvert = gridprops['nvert']
-		centroids=gridprops['centroids']
+		self.cell2d = gridprops['cell2d']
+		self.vertices = gridprops['vertices']
+		self.ncpl = gridprops['ncpl']
+		self.nvert = gridprops['nvert']
+		self.centroids=gridprops['centroids']
 
-		tgr = fgrid.VertexGrid(vertices, cell2d)
+		Clock.schedule_interval(next,1/50)
+		
+
+	def plot_mesh(self):
+		#checkin mesh
+
+		tgr = fgrid.VertexGrid(self.vertices, self.cell2d)
 		fig, ax = plt.subplots(1, 1, figsize=(15, 10))
 		pmv = fplot.PlotMapView(modelgrid=tgr)
 		pmv.plot_grid(ax=ax)
@@ -167,7 +211,6 @@ class TupacMaster(TabbedPanel):
 
 class MainApp(App):
 	def build(self):		
-		Builder.load_file('tabs.kv')
 		return TupacMaster()
 
 
