@@ -32,35 +32,36 @@
 <ProjectDialog>:
 	
     text_input: text_input
-    BoxLayout:
-        size: root.size
-        pos: root.pos
-        orientation: "vertical"
-        FileChooserListView:
-            id: filechooser
-            on_selection: text_input.text = self.selection and self.selection[0] or ''
 
+    FileChooserListView:
+        size_hint: (1, 0.9)
+        pos_hint: {"x": 0,'y':0.1}
+        id: filechooser
+        on_selection: text_input.text = self.selection and self.selection[0] or ''
+	
+	BoxLayout:
+		orientation: "horizontal"
+		size_hint: 1,0.1
+		pos_hint: {"x": 0,'y':0}
         Label:
-			text: "Project name"
-			size_hint_y: None
-			height:30
+			text: "Project Name"
+			size_hint: (0.5, 0.5)
+			
 
         TextInput:
             id: text_input
-            size_hint_y: None
-            height: 30
+            size_hint: (0.5, 0.5)
             multiline: False
+                
+        Button:
+        	size_hint: (0.5, 0.5)
+            text: "Save"
+            on_release: root.create_project(filechooser.path, text_input.text)
 
-        BoxLayout:
-            size_hint_y: None
-            height: 30
-            Button:
-                text: "Cancel"
-                on_release: root.cancel()
-
-            Button:
-                text: "Save"
-                on_release: root.create_project(filechooser.path, text_input.text)
+        Button:
+        	size_hint: (0.5, 0.5)
+            text: "Cancel"
+            on_release: root.cancel()
 
 
 <Button>:
