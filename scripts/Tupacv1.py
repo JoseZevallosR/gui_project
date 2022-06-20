@@ -14,6 +14,8 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.progressbar import ProgressBar
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
 
 
 from kivy.clock import Clock
@@ -195,9 +197,6 @@ class TupacMaster(TabbedPanel):
 		
 		Clock.schedule_interval(next,1/50)
 
-		
-		
-
 	def plot_mesh(self):
 		#checkin mesh
 		plt.gcf()
@@ -208,6 +207,22 @@ class TupacMaster(TabbedPanel):
 		box = self.ids.boxs
 		box.clear_widgets()
 		box.add_widget(FigureCanvasKivyAgg(plt.gcf()))
+
+	def add_layers(self,*args):
+		i= len(self.ids.inner_box.children)
+		lay_out=BoxLayout()
+		btn = Button(
+			text = "Load",
+            size_hint = (0.05,0.05),
+            height = "64dp"
+			)
+		txtI = TextInput(size_hint=(0.5,0.05))
+		lay_out.add_widget(btn)
+		lay_out.add_widget(txtI)
+		self.ids['layer '+ str(i)] = txtI
+		self.ids.inner_box.add_widget(lay_out)
+		
+
 
 class MainApp(App):
 	def build(self):		

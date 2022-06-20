@@ -187,3 +187,32 @@
 
 	TabbedPanelItem:
 		text: 'Vertical'
+		FloatLayout:
+			Label:
+				text: 'N° of Layers'
+				size_hint: (0.1, 0.05)
+				pos_hint: {"x": 0,'y':0.95}
+			TextInput:
+				size_hint: (0.1, 0.05)
+				pos_hint: {"x": 0.1,'y':0.95}
+			Button:
+				text: 'Create'
+				size_hint: (0.1, 0.05)
+				pos_hint: {"x": 0.2,'y':0.95}
+				on_release: root.add_layers()
+
+			ScrollView:
+				size_hint: (1, 0.8)
+				pos_hint: {"x": 0,'y':0.1}
+				BoxLayout:
+					id: inner_box
+					orientation: "vertical"
+
+	TabbedPanelItem:
+		text: 'Model'
+
+	TabbedPanelItem:
+		text: '2D results'
+
+	TabbedPanelItem:
+		text: '3D view'
