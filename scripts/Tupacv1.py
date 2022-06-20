@@ -210,13 +210,13 @@ class TupacMaster(TabbedPanel):
 
 	def add_layers(self,*args):
 		i= len(self.ids.inner_box.children)
-		lay_out=BoxLayout()
+		lay_out=BoxLayout(size_hint=(1,0.05))
 		btn = Button(
 			text = "Load",
-            size_hint = (0.05,0.05),
+            size_hint = (0.2,1),
             height = "64dp"
 			)
-		txtI = TextInput(size_hint=(0.5,0.05))
+		txtI = TextInput(size_hint=(0.8,1))
 		lay_out.add_widget(btn)
 		lay_out.add_widget(txtI)
 		self.ids['layer '+ str(i)] = txtI
