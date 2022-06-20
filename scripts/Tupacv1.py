@@ -201,12 +201,13 @@ class TupacMaster(TabbedPanel):
 
 	def plot_mesh(self):
 		#checkin mesh
-
+		plt.gcf()
 		tgr = fgrid.VertexGrid(self.vertices, self.cell2d)
 		fig, ax = plt.subplots(1, 1, figsize=(15, 10))
 		pmv = fplot.PlotMapView(modelgrid=tgr)
 		pmv.plot_grid(ax=ax)
 		box = self.ids.boxs
+		box.clear_widgets()
 		box.add_widget(FigureCanvasKivyAgg(plt.gcf()))
 
 class MainApp(App):
