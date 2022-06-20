@@ -121,25 +121,21 @@ class TupacMaster(TabbedPanel):
 	def doit_in_thread(self):
 		#review here
 		content = ProgresBarrDialog(self)
-		self.popup = Popup(title = 'Progress Bar',content=content ,size_hint=(0.5,0.5))
-
+		self.popup = Popup(title = 'Meshing',content=content ,size_hint=(0.5,0.5))
 		self.popup.open()
 
-		threading.Thread(target=partial(self.mesh,content, self.popup)).start()
+		threading.Thread(target=partial(self.mesh,content)).start()
 
+	def mesh(self,content):
 
-	def mesh(self,content,popup):
-
-		def next(dt):
-			if content.ids['my_progress_bar'].value < 100:
+		def next(*args):
+			
+			if content.ids['my_progress_bar'].value <= 99:
 				content.ids['my_progress_bar'].value +=1
-			else:				
-				self.popup.dismiss()
-				content.ids['my_progress_bar'].value=0.25
 				
 		content = content
-		self.popup = popup
-					
+		
+				
 		from geoVoronoi import createVoronoi
 		#Create mesh object
 		vorMesh = createVoronoi()
@@ -195,8 +191,11 @@ class TupacMaster(TabbedPanel):
 		self.ncpl = gridprops['ncpl']
 		self.nvert = gridprops['nvert']
 		self.centroids=gridprops['centroids']
-
+		
+		
 		Clock.schedule_interval(next,1/50)
+
+		
 		
 
 	def plot_mesh(self):
