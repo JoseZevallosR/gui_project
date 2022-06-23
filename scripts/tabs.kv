@@ -201,21 +201,48 @@
 	TabbedPanelItem:
 		text: 'Vertical'
 		FloatLayout:
+
+			Label:
+				text: "Top Layer (DEM)"
+				size_hint: (0.2, 0.05)
+				pos_hint: {"x": 0,'y':0.95}
+
+			TextInput:
+				id: dem_layer
+				size_hint: (0.3, 0.05)
+				pos_hint: {"x": 0.2,'y':0.95}
+
+			Button:
+				text: 'Load'
+				size_hint: (0.1, 0.05)
+				pos_hint: {'x':0.5,'y':0.95}
+				on_release: root.show_load('dem_layer')	
+
+			Label:
+				text: "Bottom Layer (ELevation m)"
+				size_hint: (0.2, 0.05)
+				pos_hint: {"x": 0,'y':0.90}
+			TextInput:
+				size_hint: (0.1, 0.05)
+				pos_hint: {"x": 0.2,'y':0.90}
+
 			Label:
 				text: 'N° of Layers'
 				size_hint: (0.1, 0.05)
-				pos_hint: {"x": 0,'y':0.95}
+				pos_hint: {"x": 0.1,'y':0.85}
+				
 			TextInput:
 				size_hint: (0.1, 0.05)
-				pos_hint: {"x": 0.1,'y':0.95}
+				pos_hint: {"x": 0.2,'y':0.85}
+				
 			Button:
 				text: 'Create'
 				size_hint: (0.1, 0.05)
-				pos_hint: {"x": 0.2,'y':0.95}
+				pos_hint: {"x": 0.2,'y':0.80}
 				on_release: root.add_layers()
 
 			ScrollView:
-				size_hint: (1, 0.8)
+				size_hint: (1, 0.7)
 				pos_hint: {"x": 0,'y':0.1}
 				BoxLayout:
 					id: inner_box
@@ -229,10 +256,64 @@
 				text: 'Model Name'
 				size_hint: (0.1,0.1)
 				pos_hint: {'x':0,'y':0.9}
-
 			TextInput:
 				pos_hint: {'x':0.1,'y':0.9}
-			
+
+			BoxLayout:
+				pos_hint:{'x':0,'y':0}
+				size_hint: (0.5,0.9)
+				orientation: 'vertical'
+				Label:
+					text: "Boundary conditions"
+
+
+				Label:
+					text: "Specified head"
+				Label:
+					text: "CHD: Time-V"
+				CheckBox:
+
+				Label:
+					text: "Specified flux"
+				Label:
+					text: "RCH: Recharge"
+				CheckBox:
+
+				Label:
+					text: "WELL: Well"
+				CheckBox:
+				Label:
+					text: "Head-Dependent"
+					
+	
+				Label:
+					text: "DRN: Recharge"
+				CheckBox:
+
+				Label:
+					text: "ETS: Well"
+				CheckBox:
+				Label:
+					text: "GHB: Well"
+				CheckBox:
+				Label:
+					text: "RIV: Well"
+				CheckBox:
+				Label:
+					text: "ETS: Well"
+				CheckBox:
+				Label:
+					text: "ETS: Well"
+				CheckBox:
+				Label:
+					text: "ETS: Well"
+				CheckBox:
+				Label:
+					text: "ETS: Well"
+				CheckBox:
+				Label:
+					text: "ETS: Well"
+				CheckBox:
 
 
 	TabbedPanelItem:
