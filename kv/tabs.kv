@@ -1,3 +1,5 @@
+#:include ../kv/gwf.kv
+
 
 <ProgresBarrDialog>
 
@@ -314,6 +316,16 @@
 				Label:
 					text: "ETS: Well"
 				CheckBox:
+
+			BoxLayout:
+				pos_hint:{'x':0.5,'y':0}
+				size_hint: (0.5,1)
+				id: boundary_box
+				orientation: "vertical"
+				Label:
+					text: "aqui va los interfaces"
+				
+					
 
 
 	TabbedPanelItem:

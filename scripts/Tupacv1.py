@@ -36,37 +36,15 @@ Window.size = (1100,700)
 #adding path to source directory
 sys.path.insert(0, '../src')
 from meshProperties import mesh_shape
+from boundaries_interface import *
+from popups_dialog import *
 
 import flopy.discretization as fgrid
 import flopy.plot as fplot
 import matplotlib.pyplot as plt
 
-Builder.load_file('tabs.kv')
+Builder.load_file('../kv/tabs.kv')
 
-class FileChooserI(FileChooserListView):
-	path_tracker=os.path.abspath(os.sep)#u'/'#
-	def on_submit(*args):
-		print(args[1][0])
-
-class ProgresBarrDialog(BoxLayout):
-	def __init__(self, obj, **kwargs):
-		super(ProgresBarrDialog, self).__init__(**kwargs)
-
-# load and save dialog
-class LoadDialog(FloatLayout):
-	load = ObjectProperty(None)
-	cancel = ObjectProperty(None)
-
-class SaveDialog(Widget):
-    save = ObjectProperty(None)
-    text_input = ObjectProperty(None)
-    cancel = ObjectProperty(None)
-
-class ProjectDialog(FloatLayout):
-    
-    text_input = ObjectProperty(None)
-    cancel = ObjectProperty(None)
-    create_project = ObjectProperty(None)
 
 class TupacMaster(TabbedPanel):
 	loadfile = ObjectProperty(None)
@@ -86,7 +64,7 @@ class TupacMaster(TabbedPanel):
 		self.nvert = 0
 		self.centroids=0
 
-	# POP UP HANDLERS 
+	# POPUP HANDLERS 
 	def dismiss_popup(self):
 		self._popup.dismiss()
 	def show_load(self,id_layer):
@@ -221,6 +199,9 @@ class TupacMaster(TabbedPanel):
 		lay_out.add_widget(txtI)
 		self.ids['layer '+ str(i)] = txtI
 		self.ids.inner_box.add_widget(lay_out)
+
+	#def checkbox_click(self,self.active):
+	#	pass
 		
 
 
