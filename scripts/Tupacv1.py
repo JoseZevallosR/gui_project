@@ -200,8 +200,14 @@ class TupacMaster(TabbedPanel):
 		self.ids['layer '+ str(i)] = txtI
 		self.ids.inner_box.add_widget(lay_out)
 
-	#def checkbox_click(self,self.active):
-	#	pass
+	def checkbox_click(self,instance,value):
+		#clicked = True, unclicked is false
+		print(value)
+		if value == True:
+			self.ids.boundary_box.add_widget(gwf_interface())
+		else:
+			self.ids.boundary_box.clear_widgets()
+		pass
 		
 
 
