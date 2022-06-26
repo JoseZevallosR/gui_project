@@ -64,6 +64,8 @@ class TupacMaster(TabbedPanel):
 		self.nvert = 0
 		self.centroids=0
 
+		self.gwf_widget=gwf_interface()
+
 	# POPUP HANDLERS 
 	def dismiss_popup(self):
 		self._popup.dismiss()
@@ -202,12 +204,14 @@ class TupacMaster(TabbedPanel):
 
 	def checkbox_click(self,instance,value):
 		#clicked = True, unclicked is false
-		print(value)
+		
 		if value == True:
-			self.ids.boundary_box.add_widget(gwf_interface())
+			self.ids.boundary_box.add_widget(self.gwf_widget)
 		else:
 			self.ids.boundary_box.clear_widgets()
 		pass
+		
+	
 		
 
 

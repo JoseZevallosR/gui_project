@@ -13,6 +13,8 @@ Builder.load_file('../kv/gwfdrn.kv')
 
 
 class gwf_interface(FloatLayout):
+	def generate_bc(self):
+		print(self.ids['newton_options'].text)
 	pass
 
 class gwfic_interface(FloatLayout):
