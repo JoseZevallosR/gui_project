@@ -64,7 +64,12 @@ class TupacMaster(TabbedPanel):
 		self.nvert = 0
 		self.centroids=0
 
+		#Boundaries conditions layouts
 		self.gwf_widget=gwf_interface()
+		self.gwfnpf_widget=gwfnpf_interface()
+		self.gwfrcha_widget=gwfrcha_interface()
+		self.gwfevta_widget= gwfevta_interface()
+		self.gwfdrn_widget=gwfdrn_interface()
 
 	# POPUP HANDLERS 
 	def dismiss_popup(self):
@@ -202,13 +207,49 @@ class TupacMaster(TabbedPanel):
 		self.ids['layer '+ str(i)] = txtI
 		self.ids.inner_box.add_widget(lay_out)
 
-	def checkbox_click(self,instance,value):
+	def checkbox_gwf(self,instance,value):
 		#clicked = True, unclicked is false
 		
 		if value == True:
 			self.ids.boundary_box.add_widget(self.gwf_widget)
 		else:
 			self.ids.boundary_box.clear_widgets()
+		pass
+	def checkbox_npf(self,instance,value):
+		#clicked = True, unclicked is false
+		
+		if value == True:
+			self.ids.boundary_box.add_widget(self.gwfnpf_widget)
+		else:
+			self.ids.boundary_box.clear_widgets()
+		pass
+	def checkbox_rcha(self,instance,value):
+		#clicked = True, unclicked is false
+		
+		if value == True:
+			self.ids.boundary_box.add_widget(self.gwfrcha_widget)
+		else:
+			self.ids.boundary_box.clear_widgets()
+		pass
+	def checkbox_evta(self,instance,value):
+		#clicked = True, unclicked is false
+		
+		if value == True:
+			self.ids.boundary_box.add_widget(self.gwfevta_widget)
+		else:
+			self.ids.boundary_box.clear_widgets()
+		pass
+	def checkbox_drn(self,instance,value):
+		#clicked = True, unclicked is false
+		
+		if value == True:
+			self.ids.boundary_box.add_widget(self.gwfdrn_widget)
+		else:
+			self.ids.boundary_box.clear_widgets()
+		pass
+
+
+	def create_model_gwf(self):
 		pass
 		
 	
