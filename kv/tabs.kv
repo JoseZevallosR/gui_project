@@ -20,7 +20,7 @@
 		path: self.path_tracker
 	BoxLayout:
 
-		size_hint: 1,0.1
+		size_hint: 1,0.05
     	pos_hint: {"x": 0,'y':0}
         Button:
         	size_hint: 0.5,1
@@ -87,7 +87,7 @@
 				size_hint: (0.5,1)
 				allow_stretch: True
 			Label:
-				text: "EPCG"
+				text: "EPSG"
 				size_hint: (0.1,0.05)
 				pos_hint: {'x':0,'y':0.9}
 			TextInput:
@@ -133,6 +133,13 @@
 				text: "Geometry Constraints"
 				size_hint:(0.5,0.1)
 				pos_hint: {'x':0,'y':0.9}
+				color:(0,0,0,1)
+				bold: True
+				font_size: 45
+				background_color: (1, 1, 1, 1)
+					
+
+				
 			Label:
 				text: "Limit Layer"
 				size_hint: (0.1,0.05)
@@ -187,17 +194,17 @@
 			Label:
 				text: 'Min refinement'
 				size_hint: (0.1,0.05)
-				pos_hint: {'x':0,'y':0.0}
+				pos_hint: {'x':0,'center_y':0.05}
 			TextInput:
 				id: min_ref
-				pos_hint: {'x':0.1,'y':0.0}
+				pos_hint: {'x':0.1,'center_y':0.05}
 			Button:
 				text: 'Mesh'
 				pos_hint: {'x':0.4,'y':0.1}
 				on_release: root.doit_in_thread()#root.mesh()
 			Button:
 				text: 'Plot'
-				pos_hint: {'x':0.4,'y':0.0}
+				pos_hint: {'x':0.4,'center_y':0.05}
 				on_release: root.plot_mesh()
 			BoxLayout:
 				id: boxs
@@ -274,6 +281,15 @@
 					text: 'Flow Packages'
 					size_hint: (1,0.06)
 					pos_hint: {"center_x": 0.5}
+					background_color: (1, 1, 1, 1)
+					canvas.before:
+						Color:
+							rgba: self.background_color
+						Rectangle:
+							size: self.size
+							pos: self.pos
+					color:(0,0,0,1)
+					bold: True
 
 				GridLayout:
 					size_hint: (1,0.26)
@@ -292,10 +308,29 @@
 					text: "Boundary conditions"
 					pos_hint: {"center_x": 0.5}
 					size_hint: (1,0.06)
+					background_color: (1, 1, 1, 1)
+					canvas.before:
+						Color:
+							rgba: self.background_color
+						Rectangle:
+							size: self.size
+							pos: self.pos
+					color:(0,0,0,1)
+					bold: True
+					
 				Label:
 					text: "Specified head"
 					pos_hint: {"center_x": 0.5}
 					size_hint: (1,0.06)
+					background_color: (1, 1, 1, 1)
+					canvas.before:
+						Color:
+							rgba: self.background_color
+						Rectangle:
+							size: self.size
+							pos: self.pos
+					color:(0,0,0,1)
+					italic: True
 
 				GridLayout:
 					cols: 2
@@ -308,6 +343,15 @@
 					text: "Specified flux"
 					pos_hint: {"center_x": 0.5}
 					size_hint: (1,0.06)
+					background_color: (1, 1, 1, 1)
+					canvas.before:
+						Color:
+							rgba: self.background_color
+						Rectangle:
+							size: self.size
+							pos: self.pos
+					color:(0,0,0,1)
+					italic: True
 
 				GridLayout:
 					cols: 2
@@ -328,6 +372,15 @@
 					text: "Head-Dependent"
 					pos_hint: {"center_x": 0.5}
 					size_hint: (1,0.06)
+					background_color: (1, 1, 1, 1)
+					canvas.before:
+						Color:
+							rgba: self.background_color
+						Rectangle:
+							size: self.size
+							pos: self.pos
+					color:(0,0,0,1)
+					italic: True
 
 				GridLayout:
 					cols: 2

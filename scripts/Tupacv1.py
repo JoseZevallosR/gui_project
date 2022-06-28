@@ -211,6 +211,7 @@ class TupacMaster(TabbedPanel):
 		#clicked = True, unclicked is false
 		
 		if value == True:
+			self.ids.boundary_box.clear_widgets()
 			self.ids.boundary_box.add_widget(self.gwf_widget)
 		else:
 			self.ids.boundary_box.clear_widgets()
@@ -219,6 +220,7 @@ class TupacMaster(TabbedPanel):
 		#clicked = True, unclicked is false
 		
 		if value == True:
+			self.ids.boundary_box.clear_widgets()
 			self.ids.boundary_box.add_widget(self.gwfnpf_widget)
 		else:
 			self.ids.boundary_box.clear_widgets()
@@ -227,6 +229,7 @@ class TupacMaster(TabbedPanel):
 		#clicked = True, unclicked is false
 		
 		if value == True:
+			self.ids.boundary_box.clear_widgets()
 			self.ids.boundary_box.add_widget(self.gwfrcha_widget)
 		else:
 			self.ids.boundary_box.clear_widgets()
@@ -235,6 +238,7 @@ class TupacMaster(TabbedPanel):
 		#clicked = True, unclicked is false
 		
 		if value == True:
+			self.ids.boundary_box.clear_widgets()
 			self.ids.boundary_box.add_widget(self.gwfevta_widget)
 		else:
 			self.ids.boundary_box.clear_widgets()
@@ -243,6 +247,7 @@ class TupacMaster(TabbedPanel):
 		#clicked = True, unclicked is false
 		
 		if value == True:
+			self.ids.boundary_box.clear_widgets()
 			self.ids.boundary_box.add_widget(self.gwfdrn_widget)
 		else:
 			self.ids.boundary_box.clear_widgets()
@@ -251,6 +256,7 @@ class TupacMaster(TabbedPanel):
 
 	def create_model_gwf(self):
 		pass
+		#content.ids['my_progress_bar']
 		
 	
 		
