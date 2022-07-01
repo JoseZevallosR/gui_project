@@ -31,10 +31,10 @@ class dems_layers(FloatLayout):
 		lay_out=FloatLayout(size_hint=(1,0.5))
 
 		for i in range(int(value)-2):
-			btn = Button(text=f'Load DEM {i+2}',size_hint=(0.2,0.07),pos_hint={'x':0.05,'y':0.9-i*0.07})
+			btn = Button(text=f'Load DEM {i+2}',size_hint=(0.2,0.01),pos_hint={'x':0.05,'y':0.98-i*0.01})
 			#btn.bind(on_press=self.show_load)
 			btn.bind(on_press=partial(self.show_load,'layer '+ str(i)))
-			txtI = TextInput(size_hint=(0.5,0.07),pos_hint={'x':0.3,'y':0.9-i*0.07})
+			txtI = TextInput(size_hint=(0.5,0.01),pos_hint={'x':0.3,'y':0.98-i*0.01})
 			lay_out.add_widget(btn)
 			lay_out.add_widget(txtI)
 			self.ids['layer '+ str(i)] = txtI
@@ -49,8 +49,8 @@ class offsets_layers(FloatLayout):
 		lay_out= FloatLayout(size_hint=(1,0.5))
 
 		for i in range(int(value)-2):
-			lbl= Label(text=f'Layer {i+2}',size_hint=(0.2,0.1),pos_hint={'x':0.05,'y':0.9-i*0.1})
-			txtI = TextInput(size_hint=(0.2,0.1),pos_hint={'x':0.3,'y':0.9-i*0.1})
+			lbl= Label(text=f'Layer {i+2}',size_hint=(0.2,0.01),pos_hint={'x':0.05,'y':0.98-i*0.01})
+			txtI = TextInput(size_hint=(0.2,0.01),pos_hint={'x':0.3,'y':0.98-i*0.01})
 			lay_out.add_widget(txtI)
 			lay_out.add_widget(lbl)
 			self.ids['layer '+ str(i+2)] = txtI
