@@ -86,13 +86,15 @@ class TupacMaster(TabbedPanel):
 
 	def show_project(self):
 		content = ProjectDialog(create_project=self.create_project, cancel=self.dismiss_popup)
-		self._popup = Popup(title="Save file", content=content,
+		self._popup = Popup(title="Save Project", content=content,
                             size_hint=(0.9, 0.9))
 		self._popup.open()
 
 	def create_project(self,path,filename):
-		self.directory_path = os.path.join(path, filename)
 
+		self.directory_path = os.path.join(path, filename)
+		self.ids['project_path'].text = os.path.join(path, filename)
+		
 
 		if not os.path.isdir(self.directory_path):
 		    os.makedirs(self.directory_path, exist_ok=True)
@@ -114,6 +116,9 @@ class TupacMaster(TabbedPanel):
 		threading.Thread(target=partial(self.mesh,content)).start()
 
 	def mesh(self,content):
+
+		if self.ids['project_path'].text!='':
+			self.directory_path=self.ids['project_path'].text
 
 		def next(*args):
 			
@@ -207,6 +212,20 @@ class TupacMaster(TabbedPanel):
 		self.ids['layer '+ str(i)] = txtI
 		self.ids.inner_box.add_widget(lay_out)
 
+	def checkbox_layers_dem(self,instance,value):
+		if value== True:
+			self.ids.layers_box.clear_widgets()
+		else:
+			self.ids.layers_box.clear_widgets()
+		pass
+
+	def checkbox_offsets(self,instance,value):
+		if value == True:
+			self.ids.layers_box.clear_widgets()
+		else:
+			self.ids.layers_box.clear_widgets()
+		pass
+
 	def checkbox_gwf(self,instance,value):
 		#clicked = True, unclicked is false
 		
@@ -253,6 +272,8 @@ class TupacMaster(TabbedPanel):
 			self.ids.boundary_box.clear_widgets()
 		pass
 
+	def spinner_clicked(self,value):
+		print(value)
 
 	def create_model_gwf(self):
 		pass

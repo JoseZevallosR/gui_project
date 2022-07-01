@@ -11,10 +11,15 @@
 		pos_hint: {"x": 0,'y':0.8}
 		text: "Newton Options"
 
-	TextInput:
+	Spinner:
 		id: newton_options
 		size_hint:(0.5,0.05)
+		text: "Options"
+		values: ['under_relaxation','Newton-Raphson']
 		pos_hint: {"x": 0.2,'y':0.8}
+		on_text: root.spinner_clicked(newton_options.text)
+
+		
 
 	Button:
 		text: "create"
