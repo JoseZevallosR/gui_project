@@ -38,6 +38,8 @@ sys.path.insert(0, '../src')
 from meshProperties import mesh_shape
 from boundaries_interface import *
 from popups_dialog import *
+#check
+from vertical_layers import *
 
 import flopy.discretization as fgrid
 import flopy.plot as fplot
@@ -70,6 +72,10 @@ class TupacMaster(TabbedPanel):
 		self.gwfrcha_widget=gwfrcha_interface()
 		self.gwfevta_widget= gwfevta_interface()
 		self.gwfdrn_widget=gwfdrn_interface()
+
+		#review this part for vertical mesh
+		self.offsets_layer=offsets_layers()
+		self.dems_layer=dems_layers()
 
 	# POPUP HANDLERS 
 	def dismiss_popup(self):
@@ -198,33 +204,27 @@ class TupacMaster(TabbedPanel):
 		box.clear_widgets()
 		box.add_widget(FigureCanvasKivyAgg(plt.gcf()))
 
-	def add_layers(self,*args):
-		i= len(self.ids.inner_box.children)
-		lay_out=BoxLayout(size_hint=(1,0.05))
-		btn = Button(
-			text = "Load",
-            size_hint = (0.2,1),
-            height = "64dp"
-			)
-		txtI = TextInput(size_hint=(0.8,1))
-		lay_out.add_widget(btn)
-		lay_out.add_widget(txtI)
-		self.ids['layer '+ str(i)] = txtI
-		self.ids.inner_box.add_widget(lay_out)
-
 	def checkbox_layers_dem(self,instance,value):
 		if value== True:
 			self.ids.layers_box.clear_widgets()
+			self.ids.layers_box.add_widget(self.dems_layer.add_layers(self.ids.vertical_layers.text))
 		else:
 			self.ids.layers_box.clear_widgets()
 		pass
 
 	def checkbox_offsets(self,instance,value):
+		# adding text inputs according to the number of desire layers
 		if value == True:
-			self.ids.layers_box.clear_widgets()
+			self.ids.layers_box.clear_widgets()			
+			self.ids.layers_box.add_widget(self.offsets_layer.add_layers(self.ids.vertical_layers.text))
 		else:
 			self.ids.layers_box.clear_widgets()
 		pass
+
+	def vertical_mesh(self):
+		"review this"
+		for x in self.offsets_layer.ids:
+			print(self.offsets_layer.ids[x].text)
 
 	def checkbox_gwf(self,instance,value):
 		#clicked = True, unclicked is false
