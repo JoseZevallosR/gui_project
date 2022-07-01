@@ -33,11 +33,11 @@ class dems_layers(FloatLayout):
 		for i in range(int(value)-2):
 			btn = Button(text=f'Load DEM {i+2}',size_hint=(0.2,0.01),pos_hint={'x':0.05,'y':0.98-i*0.01})
 			#btn.bind(on_press=self.show_load)
-			btn.bind(on_press=partial(self.show_load,'layer '+ str(i)))
+			btn.bind(on_press=partial(self.show_load,'layer_'+ str(i)))
 			txtI = TextInput(size_hint=(0.5,0.01),pos_hint={'x':0.3,'y':0.98-i*0.01})
 			lay_out.add_widget(btn)
 			lay_out.add_widget(txtI)
-			self.ids['layer '+ str(i)] = txtI
+			self.ids['layer_'+ str(i+2)] = txtI
 		
 		return lay_out
 	pass
@@ -53,7 +53,7 @@ class offsets_layers(FloatLayout):
 			txtI = TextInput(size_hint=(0.2,0.01),pos_hint={'x':0.3,'y':0.98-i*0.01})
 			lay_out.add_widget(txtI)
 			lay_out.add_widget(lbl)
-			self.ids['layer '+ str(i+2)] = txtI
+			self.ids['layer_'+ str(i+2)] = txtI
 
 		return lay_out
 	pass

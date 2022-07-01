@@ -4,25 +4,22 @@ from kivy.app import App
 #from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
 from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.tabbedpanel import TabbedPanel
-from kivy.uix.popup import Popup
-from kivy.properties import ObjectProperty,StringProperty
-
-from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
-from kivy.core.window import Window
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.progressbar import ProgressBar
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
+from kivy.uix.tabbedpanel import TabbedPanel
+from kivy.uix.popup import Popup
+from kivy.uix.filechooser import FileChooserListView
 
-
+from kivy.properties import ObjectProperty,StringProperty
+from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+from kivy.core.window import Window
 from kivy.clock import Clock
 
 #check
-from kivy.uix.filechooser import FileChooserListView
-
 import os
 import time
 import threading
@@ -44,6 +41,11 @@ from vertical_layers import *
 import flopy.discretization as fgrid
 import flopy.plot as fplot
 import matplotlib.pyplot as plt
+
+import numpy as np
+#rasters
+import rasterio
+from rasterio.transform import from_origin
 
 Builder.load_file('../kv/tabs.kv')
 
@@ -171,12 +173,12 @@ class TupacMaster(TabbedPanel):
 
 		#Export point data and voronoi polygons
 		#Points
-		vorMesh.getPointsAsShp('vertexOrg',outPath+'/vertexOrg.shp')
-		vorMesh.getPointsAsShp('vertexDist',outPath+'/vertexDist.shp')
-		vorMesh.getPointsAsShp('vertexBuffer',outPath+'/vertexBuffer.shp')
-		vorMesh.getPointsAsShp('vertexMaxRef',outPath+'/vertexMaxRef.shp')
-		vorMesh.getPointsAsShp('vertexMinRef',outPath+'/vertexMinRef.shp')
-		vorMesh.getPointsAsShp('vertexTotal',outPath+'/vertexTotal.shp')
+		#vorMesh.getPointsAsShp('vertexOrg',outPath+'/vertexOrg.shp')
+		#vorMesh.getPointsAsShp('vertexDist',outPath+'/vertexDist.shp')
+		#vorMesh.getPointsAsShp('vertexBuffer',outPath+'/vertexBuffer.shp')
+		#vorMesh.getPointsAsShp('vertexMaxRef',outPath+'/vertexMaxRef.shp')
+		#vorMesh.getPointsAsShp('vertexMinRef',outPath+'/vertexMinRef.shp')
+		#vorMesh.getPointsAsShp('vertexTotal',outPath+'/vertexTotal.shp')
 		#Polygons
 
 		vorMesh.getPolyAsShp('voronoiRegions',outPath+'/voronoiRegions.shp')
@@ -207,7 +209,7 @@ class TupacMaster(TabbedPanel):
 	def checkbox_layers_dem(self,instance,value):
 		if value== True:
 			self.ids.layers_box.clear_widgets()
-			self.ids.layers_box.add_widget(self.dems_layer.add_layers(self.ids.vertical_layers.text))
+			self.ids.layers_box.add_widget(self.dems_layer.add_layers(self.ids.number_layers.text))
 		else:
 			self.ids.layers_box.clear_widgets()
 		pass
@@ -216,15 +218,31 @@ class TupacMaster(TabbedPanel):
 		# adding text inputs according to the number of desire layers
 		if value == True:
 			self.ids.layers_box.clear_widgets()			
-			self.ids.layers_box.add_widget(self.offsets_layer.add_layers(self.ids.vertical_layers.text))
+			self.ids.layers_box.add_widget(self.offsets_layer.add_layers(self.ids.number_layers.text))
 		else:
 			self.ids.layers_box.clear_widgets()
 		pass
 
 	def vertical_mesh(self):
 		"review this"
-		for x in self.offsets_layer.ids:
-			print(self.offsets_layer.ids[x].text)
+		nlay = int(self.ids.number_layers.text)
+		src = rasterio.open(self.ids.dem_layer.text)
+		elevation=[x for x in src.sample(self.centroids)]
+		mtop=np.array([elev[0] for i,elev in enumerate(elevation)])
+		zbot=np.zeros((nlay,self.ncpl))
+
+		AcuifInf_Bottom = float(self.ids.bottom_layer.text)
+
+		zbot[nlay-1,] = AcuifInf_Bottom
+
+		if len(self.offsets_layer.ids)!=0:
+			for i,x in enumerate(self.offsets_layer.ids):
+				zbot[i,]=mtop-float(self.offsets_layer.ids[x].text)
+				#print(self.offsets_layer.ids[x].text)
+			print(zbot)
+		if len(self.dems_layer.ids)!=0:
+			for x in self.dems_layer.ids:
+				print(x)
 
 	def checkbox_gwf(self,instance,value):
 		#clicked = True, unclicked is false
