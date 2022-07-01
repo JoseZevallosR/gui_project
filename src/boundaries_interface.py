@@ -47,10 +47,3 @@ class gwfdrn_interface(FloatLayout):
 		self.dismiss_popup()
 
 
-#class MainApp(App):
-#	def build(self):		
-#		return gwf_interface()
-
-
-
-#MainApp().run()

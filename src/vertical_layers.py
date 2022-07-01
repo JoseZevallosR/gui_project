@@ -7,7 +7,8 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.app import App
-
+from functools import partial
+#https://www.pisciottablog.com/2020/11/03/python-kivy-bind-button-to-a-class-method-with-arguments/
 from popups_dialog import *
 
 
@@ -15,7 +16,7 @@ class dems_layers(FloatLayout):
 
 	def dismiss_popup(self):
 		self._popup.dismiss()
-	def show_load(self,id_layer):
+	def show_load(self,id_layer,*args):
 		self.id_layer_text=id_layer
 		content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
 		self._popup = Popup(title="Load file", content=content,size_hint=(0.9, 0.9))
@@ -30,9 +31,10 @@ class dems_layers(FloatLayout):
 		lay_out=FloatLayout(size_hint=(1,0.5))
 
 		for i in range(int(value)-2):
-			btn = Button(text=f'Load DEM {i+2}',size_hint=(0.2,0.1),pos_hint={'x':0.05,'y':0.9-i*0.1})
-			btn.bind(on_press=self.show_load('layer '+ str(i)))
-			txtI = TextInput(size_hint=(0.2,0.1),pos_hint={'x':0.3,'y':0.9-i*0.1})
+			btn = Button(text=f'Load DEM {i+2}',size_hint=(0.2,0.07),pos_hint={'x':0.05,'y':0.9-i*0.07})
+			#btn.bind(on_press=self.show_load)
+			btn.bind(on_press=partial(self.show_load,'layer '+ str(i)))
+			txtI = TextInput(size_hint=(0.5,0.07),pos_hint={'x':0.3,'y':0.9-i*0.07})
 			lay_out.add_widget(btn)
 			lay_out.add_widget(txtI)
 			self.ids['layer '+ str(i)] = txtI
