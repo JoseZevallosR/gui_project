@@ -14,3 +14,14 @@
 		size_hint:(0.2,0.05)
 		pos_hint: {"x": 0.3,'y':0.8}
 
+	ScrollView:
+		size_hint: (1, 0.65)
+		pos_hint: {"x": 0,'y':0.1}
+		do_scroll_x: False
+        do_scroll_y: True
+		BoxLayout:
+			size_hint: None,None
+			size: root.width, root.height*5
+			id: npf_box
+			orientation: "vertical"
+

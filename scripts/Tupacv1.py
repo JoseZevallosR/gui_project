@@ -225,7 +225,7 @@ class TupacMaster(TabbedPanel):
 
 	def vertical_mesh(self):
 		"review this"
-		nlay = int(self.ids.number_layers.text)
+		nlay = int(self.ids.number_layers.text)#number of layers
 		src = rasterio.open(self.ids.dem_layer.text)
 		elevation=[x for x in src.sample(self.centroids)]
 		mtop=np.array([elev[0] for i,elev in enumerate(elevation)])
@@ -258,9 +258,12 @@ class TupacMaster(TabbedPanel):
 		
 		if value == True:
 			self.ids.boundary_box.clear_widgets()
+			nlay = int(self.ids.number_layers.text) #number of layers
+			self.gwfnpf_widget.ids.npf_box.add_widget(self.gwfnpf_widget.add_layers(nlay))
 			self.ids.boundary_box.add_widget(self.gwfnpf_widget)
 		else:
 			self.ids.boundary_box.clear_widgets()
+			self.gwfnpf_widget.ids.npf_box.clear_widgets()
 		pass
 	def checkbox_rcha(self,instance,value):
 		#clicked = True, unclicked is false
