@@ -54,12 +54,12 @@ class offsets_layers(FloatLayout):
 		#lay_out=BoxLayout(orientation='vertical',size_hint=(1,0.5))
 		lay_out= FloatLayout(size_hint=(1,0.5))
 
-		for i in range(int(value)-2):
-			lbl= Label(text=f'Layer {i+2}',size_hint=(0.2,0.01),pos_hint={'x':0.05,'y':0.98-i*0.01})
+		for i in range(int(value)-1):
+			lbl= Label(text=f'Bottom layer {i+1} (%)',size_hint=(0.2,0.01),pos_hint={'x':0.05,'y':0.98-i*0.01})
 			txtI = TextInput(size_hint=(0.2,0.01),pos_hint={'x':0.3,'y':0.98-i*0.01})
 			lay_out.add_widget(txtI)
 			lay_out.add_widget(lbl)
-			self.ids['layer_'+ str(i+2)] = txtI
+			self.ids['layer_'+ str(i+1)] = txtI
 
 		return lay_out
 	pass

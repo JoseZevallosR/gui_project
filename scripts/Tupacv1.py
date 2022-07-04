@@ -38,11 +38,29 @@ from popups_dialog import *
 #check
 from vertical_layers import *
 
+#modflow
+import flopy
 import flopy.discretization as fgrid
 import flopy.plot as fplot
+from flopy.utils.gridintersect import GridIntersect
+import flopy.utils.binaryfile as bf
 import matplotlib.pyplot as plt
 
 import numpy as np
+from scipy.interpolate import griddata
+from osgeo import osr
+from osgeo import gdal
+from osgeo import gdal_array
+import rasterio
+from rasterio.transform import from_origin
+import geopandas as gpd
+import json
+
+from shapely.geometry import mapping
+from shapely.geometry import Polygon, Point, MultiLineString
+from collections import OrderedDict
+import pandas as pd
+
 #rasters
 import rasterio
 from rasterio.transform import from_origin
@@ -235,11 +253,15 @@ class TupacMaster(TabbedPanel):
 
 		zbot[nlay-1,] = AcuifInf_Bottom
 
+		top_bottom_dif= mtop-AcuifInf_Bottom
+
 		if len(self.offsets_layer.ids)!=0:
 			for i,x in enumerate(self.offsets_layer.ids):
-				zbot[i,]=mtop-float(self.offsets_layer.ids[x].text)
+				zbot[i,]=AcuifInf_Bottom+float(self.offsets_layer.ids[x].text)*top_bottom_dif
 				#print(self.offsets_layer.ids[x].text)
 			print(zbot)
+			self.mtop=mtop
+			self.zbot=zbot #check here
 		if len(self.dems_layer.ids)!=0:
 			for x in self.dems_layer.ids:
 				print(x)
@@ -297,6 +319,68 @@ class TupacMaster(TabbedPanel):
 		print(value)
 
 	def create_model_gwf(self):
+		# create simulation
+		model_name = self.ids.model_name.text
+		model_ws = self.directory_path+'/model'
+		exe_name = '../exe/mf6.exe'
+
+		sim = flopy.mf6.MFSimulation(sim_name=model_name, version='mf6', exe_name=exe_name,sim_ws=model_ws)
+
+		# create tdis package
+		tdis_rc = [(1.0, 1, 1.0)]
+		nper=len(tdis_rc)
+		tdis = flopy.mf6.ModflowTdis(sim, nper=nper, time_units='seconds',perioddata=tdis_rc)
+
+		# create iterative model solution and register the gwf model with it
+		ims = flopy.mf6.ModflowIms(sim, linear_acceleration='BICGSTAB')
+		# create gwf model
+		gwf = flopy.mf6.ModflowGwf(sim, modelname=model_name, save_flows=True, newtonoptions=['under_relaxation'])
+
+		# disv
+		nlay = int(self.ids.number_layers.text)
+		disv = flopy.mf6.ModflowGwfdisv(gwf, nlay=nlay, ncpl=self.ncpl,top=self.mtop, botm=self.zbot,nvert=self.nvert, vertices=self.vertices,cell2d=self.cell2d)
+
+		ic = flopy.mf6.ModflowGwfic(gwf, strt=np.stack([self.mtop for i in range(nlay)]))
+
+		Kx =[4E-4,5E-6,1E-6,9E-7,5E-7]
+		icelltype = [1,1,0,0,0]
+		npf = flopy.mf6.ModflowGwfnpf(gwf,save_specific_discharge=True,icelltype=icelltype,k=Kx)
+
+		rchr = 0.15/365/86400
+		rch = flopy.mf6.ModflowGwfrcha(gwf, recharge=rchr)
+
+		evtr = 1.2/365/86400
+		evt = flopy.mf6.ModflowGwfevta(gwf,ievt=1,surface=self.mtop,rate=evtr,depth=1.0)
+
+		tgr = fgrid.VertexGrid(self.vertices, self.cell2d)
+
+		ix2 = GridIntersect(tgr)
+		rios=gpd.read_file(self.ids.river_layer.text) #river layer
+		list_rivers=[]
+		for i in range(rios.shape[0]):
+		    
+		    list_rivers.append(rios['geometry'].loc[i])
+		    
+		mls = MultiLineString(lines=list_rivers)
+		#intersec rivers with our grid
+		result=ix2.intersect(mls)
+		#stress_period_data : [cellid, elev, cond, aux, boundname]
+		drain_list = []
+		for i in result.cellids:
+		    drain_list.append([0,i,self.mtop[i],0.001])
+		drain_spd = {0:drain_list}
+		drn = flopy.mf6.ModflowGwfdrn(gwf,stress_period_data=drain_spd)
+
+
+		hname = '{}.hds'.format(model_name)
+		cname = '{}.cbc'.format(model_name)
+		oc = flopy.mf6.ModflowGwfoc(gwf, budget_filerecord=cname,
+		 head_filerecord=hname,
+		 saverecord=[('HEAD', 'ALL'), ('BUDGET',
+		'ALL')])
+
+		sim.write_simulation()
+		sim.run_simulation()
 		pass
 		#content.ids['my_progress_bar']
 		
