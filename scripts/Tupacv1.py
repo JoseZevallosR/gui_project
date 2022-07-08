@@ -55,6 +55,7 @@ import rasterio
 from rasterio.transform import from_origin
 import geopandas as gpd
 import json
+import pyvista as pv
 
 from shapely.geometry import mapping
 from shapely.geometry import Polygon, Point, MultiLineString
@@ -96,6 +97,7 @@ class TupacMaster(TabbedPanel):
 		#review this part for vertical mesh
 		self.offsets_layer=offsets_layers()
 		self.dems_layer=dems_layers()
+			
 
 	# POPUP HANDLERS 
 	def dismiss_popup(self):
@@ -232,8 +234,11 @@ class TupacMaster(TabbedPanel):
 			self.ids.layers_box.clear_widgets()
 		pass
 
+
 	def checkbox_offsets(self,instance,value):
 		# adding text inputs according to the number of desire layers
+		nlay = int(self.ids.number_layers.text)
+		self.npf_properties=self.gwfnpf_widget.add_layers(nlay)# this line creates the number of ks necessary
 		if value == True:
 			self.ids.layers_box.clear_widgets()			
 			self.ids.layers_box.add_widget(self.offsets_layer.add_layers(self.ids.number_layers.text))
@@ -277,11 +282,11 @@ class TupacMaster(TabbedPanel):
 		pass
 	def checkbox_npf(self,instance,value):
 		#clicked = True, unclicked is false
-		
+
 		if value == True:
 			self.ids.boundary_box.clear_widgets()
-			nlay = int(self.ids.number_layers.text) #number of layers
-			self.gwfnpf_widget.ids.npf_box.add_widget(self.gwfnpf_widget.add_layers(nlay))
+			#displaying the number of properties necessary for the model
+			self.gwfnpf_widget.ids.npf_box.add_widget(self.npf_properties)
 			self.ids.boundary_box.add_widget(self.gwfnpf_widget)
 		else:
 			self.ids.boundary_box.clear_widgets()
@@ -346,16 +351,19 @@ class TupacMaster(TabbedPanel):
 		icelltype = [1,1,0,0,0]
 		npf = flopy.mf6.ModflowGwfnpf(gwf,save_specific_discharge=True,icelltype=icelltype,k=Kx)
 
-		rchr = 0.15/365/86400
+		#data from gui
+		rchr = float(self.gwfrcha_widget.ids['rcha_rate'].text)#0.15/365/86400
 		rch = flopy.mf6.ModflowGwfrcha(gwf, recharge=rchr)
 
-		evtr = 1.2/365/86400
+		#data from gui
+		evtr = float(self.gwfevta_widget.ids['evta_rate'].text)#1.2/365/86400
 		evt = flopy.mf6.ModflowGwfevta(gwf,ievt=1,surface=self.mtop,rate=evtr,depth=1.0)
 
 		tgr = fgrid.VertexGrid(self.vertices, self.cell2d)
 
 		ix2 = GridIntersect(tgr)
-		rios=gpd.read_file(self.ids.river_layer.text) #river layer
+		#data from gui
+		rios=gpd.read_file(self.gwfdrn_widget.ids['drain_shape'].text) #river layer
 		list_rivers=[]
 		for i in range(rios.shape[0]):
 		    
@@ -383,7 +391,21 @@ class TupacMaster(TabbedPanel):
 		sim.run_simulation()
 		pass
 		#content.ids['my_progress_bar']
-		
+	
+	def plot3D(self):
+		#grid=pv.read('C:/Users/saulm/Documents/jose_Z/vtk_files/model_output_test/regional_model_000000.vtk')
+		#grid = grid.cast_to_unstructured_grid()
+		#grid.plot(color='w', show_edges=True, show_bounds=True)
+		#plt.show()
+		print(self.gwfnpf_widget.ids)
+		#Boundaries conditions layouts
+		print(self.gwf_widget.ids)
+		print(self.gwfnpf_widget.ids)
+		print(self.gwfrcha_widget.ids)
+		print(self.gwfevta_widget.ids)
+		print(self.gwfdrn_widget.ids)
+
+
 	
 		
 

@@ -27,18 +27,22 @@ class gwfic_interface(FloatLayout):
 	pass
 
 class gwfnpf_interface(FloatLayout):
+	def __init__(self,**kwargs):
+		super().__init__(**kwargs)
+		self.lay_out=FloatLayout(size_hint=(1,0.5))
+
+		
 	def add_layers(self,value,*args):
 		#lay_out=BoxLayout(orientation='vertical',size_hint=(1,0.5))
-		lay_out= FloatLayout(size_hint=(1,0.5))
-
+		 
 		for i in range(int(value)):
 			lbl= Label(text=f'K {i+1}',size_hint=(0.2,0.01),pos_hint={'x':0.05,'y':0.98-i*0.01})
 			txtI = TextInput(size_hint=(0.2,0.01),pos_hint={'x':0.3,'y':0.98-i*0.01})
-			lay_out.add_widget(txtI)
-			lay_out.add_widget(lbl)
+			self.lay_out.add_widget(txtI)
+			self.lay_out.add_widget(lbl)
 			self.ids['k_x'+ str(i+1)] = txtI
 
-		return lay_out
+		return self.lay_out
 	
 
 class gwfrcha_interface(FloatLayout):
