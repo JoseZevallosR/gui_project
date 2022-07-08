@@ -36,11 +36,16 @@ class gwfnpf_interface(FloatLayout):
 		#lay_out=BoxLayout(orientation='vertical',size_hint=(1,0.5))
 		 
 		for i in range(int(value)):
-			lbl= Label(text=f'K {i+1}',size_hint=(0.2,0.01),pos_hint={'x':0.05,'y':0.98-i*0.01})
-			txtI = TextInput(size_hint=(0.2,0.01),pos_hint={'x':0.3,'y':0.98-i*0.01})
-			self.lay_out.add_widget(txtI)
-			self.lay_out.add_widget(lbl)
-			self.ids['k_x'+ str(i+1)] = txtI
+			lbl1= Label(text=f'K {i+1}',size_hint=(0.1,0.01),pos_hint={'x':0.05,'y':0.98-i*0.01})
+			lbl2= Label(text=f'Type {i+1}',size_hint=(0.1,0.01),pos_hint={'x':0.4,'y':0.98-i*0.01})
+			txtI1 = TextInput(size_hint=(0.1,0.01),pos_hint={'x':0.2,'y':0.98-i*0.01})
+			txtI2 = TextInput(size_hint=(0.1,0.01),pos_hint={'x':0.5,'y':0.98-i*0.01})
+			self.lay_out.add_widget(txtI1)
+			self.lay_out.add_widget(txtI2)
+			self.lay_out.add_widget(lbl1)
+			self.lay_out.add_widget(lbl2)
+			self.ids['k_x'+ str(i+1)] = txtI1
+			self.ids['type_i'+str(i+1)] = txtI2
 
 		return self.lay_out
 	

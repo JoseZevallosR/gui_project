@@ -347,8 +347,9 @@ class TupacMaster(TabbedPanel):
 
 		ic = flopy.mf6.ModflowGwfic(gwf, strt=np.stack([self.mtop for i in range(nlay)]))
 
-		Kx =[4E-4,5E-6,1E-6,9E-7,5E-7]
-		icelltype = [1,1,0,0,0]
+		#Kx = [4E-4,5E-6,1E-6,9E-7,5E-7]
+		Kx = [float(self.gwfnpf_widget.ids['k_x'+ str(i+1)].text) for i in range(nlay)] #take the values from widget
+		icelltype = [int(self.gwfnpf_widget.ids['type_i'+ str(i+1)].text) for i in range(nlay)]#[1,1,0,0,0]
 		npf = flopy.mf6.ModflowGwfnpf(gwf,save_specific_discharge=True,icelltype=icelltype,k=Kx)
 
 		#data from gui
