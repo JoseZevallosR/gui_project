@@ -263,8 +263,8 @@ class TupacMaster(TabbedPanel):
 		if len(self.offsets_layer.ids)!=0:
 			for i,x in enumerate(self.offsets_layer.ids):
 				zbot[i,]=AcuifInf_Bottom+float(self.offsets_layer.ids[x].text)*top_bottom_dif
-				#print(self.offsets_layer.ids[x].text)
-			print(zbot)
+				
+			print(zbot)#erase this later
 			self.mtop=mtop
 			self.zbot=zbot #check here
 		if len(self.dems_layer.ids)!=0:
@@ -281,7 +281,7 @@ class TupacMaster(TabbedPanel):
 			self.ids.boundary_box.clear_widgets()
 		pass
 	def checkbox_npf(self,instance,value):
-		#clicked = True, unclicked is false
+		#clicked = True, unclicked = false
 
 		if value == True:
 			self.ids.boundary_box.clear_widgets()
@@ -293,7 +293,7 @@ class TupacMaster(TabbedPanel):
 			self.gwfnpf_widget.ids.npf_box.clear_widgets()
 		pass
 	def checkbox_rcha(self,instance,value):
-		#clicked = True, unclicked is false
+		#clicked = True, unclicked = false
 		
 		if value == True:
 			self.ids.boundary_box.clear_widgets()
@@ -302,7 +302,7 @@ class TupacMaster(TabbedPanel):
 			self.ids.boundary_box.clear_widgets()
 		pass
 	def checkbox_evta(self,instance,value):
-		#clicked = True, unclicked is false
+		#clicked = True, unclicked = false
 		
 		if value == True:
 			self.ids.boundary_box.clear_widgets()
@@ -311,7 +311,7 @@ class TupacMaster(TabbedPanel):
 			self.ids.boundary_box.clear_widgets()
 		pass
 	def checkbox_drn(self,instance,value):
-		#clicked = True, unclicked is false
+		#clicked = True, unclicked = false
 		
 		if value == True:
 			self.ids.boundary_box.clear_widgets()
@@ -388,11 +388,73 @@ class TupacMaster(TabbedPanel):
 		 saverecord=[('HEAD', 'ALL'), ('BUDGET',
 		'ALL')])
 
+		self.gwf =gwf
+
 		sim.write_simulation()
 		sim.run_simulation()
 		pass
 		#content.ids['my_progress_bar']
 	
+	def plot_heads(self):
+		model_name = self.ids.model_name.text
+		model_ws = self.directory_path+'/model'
+
+		hds = bf.HeadFile(model_ws+'/'+model_name + '.hds')
+		head = hds.get_data(totim=1.0)
+		head[head==1e+30]=np.nan
+		cpth = os.path.join(model_ws, model_name+'.cbc')
+		cobj = flopy.utils.CellBudgetFile(cpth, precision=hds.precision)
+		spd = cobj.get_data(text='DATA-SPDIS')[0]
+
+
+		plt.gcf()
+		fig = plt.figure(figsize=(10, 15))
+		ax = fig.add_subplot(1, 1, 1, aspect='equal')
+		mapview = flopy.plot.PlotMapView(model=self.gwf)
+
+		quadmesh = mapview.plot_array(head, alpha=0.5)
+		levels = np.linspace(np.nanmin(head),np.nanmax(head),num=50)
+		c = mapview.contour_array(head, linewidths=0.75,colors='white',levels=levels)
+		plt.clabel(c, fmt='%3d')
+		plt.colorbar(quadmesh, shrink=0.75)
+
+		box = self.ids.results2d
+		box.clear_widgets()
+		box.add_widget(FigureCanvasKivyAgg(plt.gcf()))
+		pass
+
+	def plot_xs(self):
+		pass
+
+	def plot_specificQ(self):
+		model_name = self.ids.model_name.text
+		model_ws = self.directory_path+'/model'
+
+		hds = bf.HeadFile(model_ws+'/'+model_name + '.hds')
+		head = hds.get_data(totim=1.0)
+		head[head==1e+30]=np.nan
+		cpth = os.path.join(model_ws, model_name+'.cbc')
+		cobj = flopy.utils.CellBudgetFile(cpth, precision=hds.precision)
+		spd = cobj.get_data(text='DATA-SPDIS')[0]
+
+		head = self.gwf.output.head().get_data()
+		bdobj = self.gwf.output.budget()
+
+		plt.gcf()
+		fig = plt.figure(figsize=(15, 15))
+		ax = plt.subplot(1, 1, 1)
+		pmv = flopy.plot.PlotMapView(self.gwf)
+		pmv.plot_array(head, cmap="jet", alpha=0.5)
+		pmv.plot_vector(spd["qx"], spd["qy"], alpha=0.25);
+
+		box = self.ids.results2d
+		box.clear_widgets()
+		box.add_widget(FigureCanvasKivyAgg(plt.gcf()))
+		pass
+
+	def save_current_2d(self):
+		pass
+
 	def plot3D(self):
 		#grid=pv.read('C:/Users/saulm/Documents/jose_Z/vtk_files/model_output_test/regional_model_000000.vtk')
 		#grid = grid.cast_to_unstructured_grid()

@@ -34,11 +34,10 @@ class dems_layers(FloatLayout):
 
 	def add_layers(self,value,*args):
 		#lay_out=FloatLayout(size_hint=(1,0.5))
-		prin(self.ids)
+		print(self.ids)
 		if len(self.ids)!=value:
 			for i in range(int(value)-2):
 				btn = Button(text=f'Load DEM {i+2}',size_hint=(0.2,0.01),pos_hint={'x':0.05,'y':0.98-i*0.01})
-				#btn.bind(on_press=self.show_load)
 				btn.bind(on_press=partial(self.show_load,'layer_'+ str(i)))
 				txtI = TextInput(size_hint=(0.5,0.01),pos_hint={'x':0.3,'y':0.98-i*0.01})
 				self.dem_layout.add_widget(btn)

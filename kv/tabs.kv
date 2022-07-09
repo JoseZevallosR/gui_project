@@ -81,7 +81,7 @@
 			Image:
 				source: '../img/Tupac.png'
 				pos_hint: {'x':0.5,'y':0}
-				size_hint: (0.5,1)
+				size_hint: (0.45,1)
 				allow_stretch: True
 			Label:
 				text: "EPSG"
@@ -440,6 +440,32 @@
 
 	TabbedPanelItem:
 		text: '2D results'
+		FloatLayout:
+			Button:
+				text:'Heads'
+				size_hint: (0.15,0.05)
+				pos_hint: {'x':0.1,'center_y':0.95}
+				on_release: root.plot_heads()
+			Button:
+				text: 'Cross Secction'
+				size_hint: (0.15,0.05)
+				pos_hint: {'x':0.3,'center_y':0.95}
+				on_release: root.plot_xs()
+			Button:
+				text:' Specific discharges'
+				size_hint: (0.15,0.05)
+				pos_hint: {'x':0.5,'center_y':0.95}
+				on_release: root.plot_specificQ()
+
+			Button:
+				text: 'Save'
+				size_hint: (0.15, 0.05)
+				pos_hint: {'x':0.7,'center_y':0.95}
+				on_release: root.save_current_2d()
+			BoxLayout:
+				id: results2d
+				pos_hint: {'center_x':0.5,'center_y':0.45}
+				size_hint: (0.8,0.85)
 
 	TabbedPanelItem:
 		text: '3D view'
