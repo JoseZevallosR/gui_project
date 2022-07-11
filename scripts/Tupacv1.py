@@ -290,7 +290,7 @@ class TupacMaster(TabbedPanel):
 			for x in self.dems_layer.ids:
 				print(x)
 
-		Clock.schedule_interval(next,1/10)
+		Clock.schedule_interval(next,1/100)
 
 	def checkbox_gwf(self,instance,value):
 		#clicked = True, unclicked is false
