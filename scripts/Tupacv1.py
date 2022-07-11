@@ -290,7 +290,7 @@ class TupacMaster(TabbedPanel):
 			for x in self.dems_layer.ids:
 				print(x)
 
-		Clock.schedule_interval(next,1/50)
+		Clock.schedule_interval(next,1/10)
 
 	def checkbox_gwf(self,instance,value):
 		#clicked = True, unclicked is false
@@ -496,8 +496,8 @@ class TupacMaster(TabbedPanel):
 		pass
 
 	def save_current_2d(self):
-		box = self.ids.results2d
-		box.export_to_png()
+		#box = self.ids.results2d
+		#box.export_to_png()
 		pass
 
 	def plot3D(self):

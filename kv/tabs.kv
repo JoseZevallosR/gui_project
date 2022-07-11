@@ -68,6 +68,7 @@
 
 <TextInput>:
 	size_hint: (0.3,0.05)
+	multiline: False
 
 <CheckBox>:
 	size_hint_x: 0.1
@@ -469,11 +470,10 @@
 
 	TabbedPanelItem:
 		text: '3D view'
-		BoxLayout:
-			pos_hint:{'x':0,'y':0.05}
-			size_hint: (0.5,0.85)
-			orientation: 'vertical'
+		FloatLayout:
 
 			Button:
+				size_hint: (0.2, 0.05)
+				pos_hint: {"center_x": 0.5,'center_y':0.5}
 				text:'Plot 3D'
 				on_release: root.plot3D()
