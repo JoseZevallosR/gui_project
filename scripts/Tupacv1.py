@@ -135,7 +135,7 @@ class TupacMaster(TabbedPanel):
 	    
 		self.dismiss_popup()
 
-	def doit_in_thread(self):
+	def voronoi_mesh_loading(self):
 		#review here
 		content = ProgresBarrDialog(self)
 		self.popup = Popup(title = 'Meshing',content=content ,size_hint=(0.5,0.5))
@@ -246,7 +246,26 @@ class TupacMaster(TabbedPanel):
 			self.ids.layers_box.clear_widgets()
 		pass
 
-	def vertical_mesh(self):
+	def vertical_mesh_loading(self):
+		#review here
+		content = ProgresBarrDialog(self)
+		self.popup = Popup(title = 'Vertical Meshing',content=content ,size_hint=(0.5,0.5))
+		self.popup.open()
+
+		threading.Thread(target=partial(self.vertical_mesh,content)).start()
+
+
+	def vertical_mesh(self,content):
+		if self.ids['project_path'].text!='':
+			self.directory_path=self.ids['project_path'].text
+
+		def next(*args):
+			
+			if content.ids['my_progress_bar'].value <= 99:
+				content.ids['my_progress_bar'].value +=1
+				
+		content = content
+
 		"review this"
 		nlay = int(self.ids.number_layers.text)#number of layers
 		src = rasterio.open(self.ids.dem_layer.text)
@@ -270,6 +289,8 @@ class TupacMaster(TabbedPanel):
 		if len(self.dems_layer.ids)!=0:
 			for x in self.dems_layer.ids:
 				print(x)
+
+		Clock.schedule_interval(next,1/50)
 
 	def checkbox_gwf(self,instance,value):
 		#clicked = True, unclicked is false
@@ -323,7 +344,27 @@ class TupacMaster(TabbedPanel):
 	def spinner_clicked(self,value):
 		print(value)
 
-	def create_model_gwf(self):
+
+	def running_model_loading(self):
+		#review here
+		content = ProgresBarrDialog(self)
+		self.popup = Popup(title = 'Model creating and running ...',content=content ,size_hint=(0.5,0.5))
+		self.popup.open()
+
+		threading.Thread(target=partial(self.create_model_gwf,content)).start()
+
+	def create_model_gwf(self,content):
+		#Bar loading
+		if self.ids['project_path'].text!='':
+			self.directory_path=self.ids['project_path'].text
+
+		def next(*args):
+			
+			if content.ids['my_progress_bar'].value <= 99:
+				content.ids['my_progress_bar'].value +=1
+				
+		content = content
+
 		# create simulation
 		model_name = self.ids.model_name.text
 		model_ws = self.directory_path+'/model'
@@ -392,6 +433,8 @@ class TupacMaster(TabbedPanel):
 
 		sim.write_simulation()
 		sim.run_simulation()
+
+		Clock.schedule_interval(next,1/50)
 		pass
 		#content.ids['my_progress_bar']
 	
@@ -453,6 +496,8 @@ class TupacMaster(TabbedPanel):
 		pass
 
 	def save_current_2d(self):
+		box = self.ids.results2d
+		box.export_to_png()
 		pass
 
 	def plot3D(self):

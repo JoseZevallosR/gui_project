@@ -200,7 +200,7 @@
 			Button:
 				text: 'Mesh'
 				pos_hint: {'x':0.4,'y':0.1}
-				on_release: root.doit_in_thread()#root.mesh()
+				on_release: root.voronoi_mesh_loading()
 			Button:
 				text: 'Plot'
 				pos_hint: {'x':0.4,'center_y':0.05}
@@ -270,7 +270,7 @@
 			Button:
 				text: "Mesh"
 				pos_hint: {"x": 0.7,'y':0.82}
-				on_release: root.vertical_mesh()
+				on_release: root.vertical_mesh_loading() #load bar while meshing
 			ScrollView:
 				size_hint: (1, 0.65)
 				pos_hint: {"x": 0,'y':0.1}
@@ -424,9 +424,9 @@
 					CheckBox:
 
 			Button:
-				text: "Create Model"				
+				text: "Create and Run Model"				
 				size_hint: (0.5,0.05)
-				on_release: root.create_model_gwf()
+				on_release: root.running_model_loading()
 
 			BoxLayout:
 				pos_hint:{'x':0.5,'y':0}

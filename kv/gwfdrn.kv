@@ -1,14 +1,23 @@
 <gwfdrn_interface>
 	Label:
 		text: 'Drains Shapefile'
-		size_hint: (0.2,0.05)
-		pos_hint: {"x": 0,'y':0.9}
+		size_hint: (0.3,0.05)
+		pos_hint: {"center_x": 0.15,'y':0.9}
 	TextInput:
 		id: drain_shape
 		size_hint:(0.5,0.05)
-		pos_hint: {"x": 0.2,'y':0.9}
+		pos_hint: {"x": 0.3,'y':0.9}
 	Button:
 		text: "Load"
-		pos_hint: {"x": 0.7,'y':0.9}
+		pos_hint: {"x": 0.8,'y':0.9}
 		size_hint: (0.1, 0.05)
 		on_release: root.show_load('drain_shape')
+
+	Label:
+		text: 'Conduntance'
+		size_hint: (0.2,0.05)
+		pos_hint: {"center_x": 0.15,'y':0.8}
+	TextInput:
+		id: drain_conduntance
+		size_hint: (0.1, 0.05)
+		pos_hint: {"x": 0.3,'y':0.8}
