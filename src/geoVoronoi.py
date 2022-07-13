@@ -42,6 +42,7 @@ class createVoronoi():
         self.modelDis['yDim'] = limitBounds[3] - limitBounds[1]
         self.modelDis['limitShape'] = limitShape
         self.modelDis['limitGeometry'] = limitGeom
+        self.modelDis['layerPolys'] = []
         self.modelDis['crs'] = limitShape.crs
 
     def defineParameters(self, maxRef=500, minRef=50, stages=5):
@@ -66,6 +67,7 @@ class createVoronoi():
                     discGeomClip =  self.modelDis['limitGeometry'].intersection(polyGeom)
                     if not discGeomClip.is_empty:
                         discGeomList.append(discGeomClip)
+                        self.modelDis['layerPolys'].append(discGeomClip)
             unaryPoly = unary_union(discGeomList)
             if unaryPoly.geom_type == 'MultiPolygon':
                 unaryMulti = unaryPoly
@@ -179,11 +181,36 @@ class createVoronoi():
             circle = Point(point).buffer(refSize)
             circleList.append(circle)
         circleUnion = unary_union(circleList)
-        polyPointList = []
+
+        interiorPolyList = []
+
+        layerMPoly = MultiPolygon(self.modelDis['layerPolys'])
+
         if circleUnion.geom_type == 'MultiPolygon':
-            circleMulti = circleUnion
+            #if it has interiors
+            for geom in circleUnion.geoms:
+                if geom.interiors:
+                    for interior in geom.interiors:
+                        if not interior.intersects(layerMPoly):
+                            interiorPolyList.append(Polygon(interior))
+                    if refSize == self.modelDis['refSizeList'].max():
+                        self.modelDis['polygonInteriorsMaxRef'] = MultiPolygon(interiorPolyList)
+            circleMulti = MultiPolygon([poly for poly in circleUnion] + interiorPolyList)
+
         elif circleUnion.geom_type == 'Polygon':
-            circleMulti = MultiPolygon([circleUnion])
+            #if it has interiors
+            if circleUnion.interiors:
+                for interior in circleUnion.interiors:
+                    interiorPolyList.append(Polygon(interior))
+                if refSize == self.modelDis['refSizeList'].max():
+                    self.modelDis['polygonInteriorsMaxRef'] = MultiPolygon(interiorPolyList)
+            circleMulti = MultiPolygon([circleUnion]+interiorPolyList)
+        else:
+            print("The buffer doesn't create appropiate buffers")
+
+
+        #self.modelDis['circleMulti'+str(refSize)] = circleMulti
+        polyPointList = []
         for poly in circleMulti.geoms:
             outerLength = poly.exterior.length
             if indexRef%2 == 0:
@@ -216,6 +243,7 @@ class createVoronoi():
         #for max ref points
         outerPoly = self.modelDis['limitGeometry']
         innerPolys = self.modelDis['circleUnion']
+        #for inner buffer polys
         for poly in innerPolys.geoms:
             initialPoly = copy.copy(outerPoly)
             transPoly = outerPoly.difference(poly)
@@ -223,14 +251,22 @@ class createVoronoi():
                 outerPoly.geom.interior += poly
             elif initialPoly.area > transPoly.area:
                 outerPoly = outerPoly.difference(poly)
+        #for polys layerPolys
+        for poly in self.modelDis['layerPolys']:
+            outerPoly = outerPoly.difference(poly)
         maxRefXList = np.arange(self.modelDis['xMin']+minRef,self.modelDis['xMax'],maxRef)
         maxRefYList = np.arange(self.modelDis['yMin']+minRef,self.modelDis['yMax'],maxRef)
 
         for xCoord in maxRefXList:
             for yCoord in maxRefYList:
                 refPoint = Point(xCoord,yCoord)
+                # for model limit
                 if outerPoly.contains(refPoint):
                     self.modelDis['vertexMaxRef'].append((xCoord,yCoord))
+                # for polygon interiors
+                for interior in self.modelDis['polygonInteriorsMaxRef']:
+                    if interior.contains(refPoint):
+                        self.modelDis['vertexMaxRef'].append((xCoord,yCoord))
 
         self.modelDis['pointsMaxRefPoly']=outerPoly
 
@@ -242,13 +278,11 @@ class createVoronoi():
                     bounds = poly.exterior.bounds
                     minRefXList = np.arange(bounds[0]+minRef,bounds[2],minRef)
                     minRefYList = np.arange(bounds[1]+minRef,bounds[3],minRef)
-
                     for xCoord in minRefXList:
                         for yCoord in minRefYList:
                             refPoint = Point(xCoord,yCoord)
                             if poly.contains(refPoint):
                                 self.modelDis['vertexMinRef'].append((xCoord,yCoord))
-
 
     def createPointCloud(self):
         start = time.time()
