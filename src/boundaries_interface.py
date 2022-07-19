@@ -10,6 +10,8 @@ from kivy.app import App
 from popups_dialog import *
 
 #Importing all the kvs
+Builder.load_file('../kv/tdis.kv')
+
 Builder.load_file('../kv/gwf.kv')
 Builder.load_file('../kv/gwfic.kv')
 Builder.load_file('../kv/gwfnpf.kv')
@@ -17,6 +19,27 @@ Builder.load_file('../kv/gwfrcha.kv')
 Builder.load_file('../kv/gwfevta.kv')
 Builder.load_file('../kv/gwfdrn.kv')
 
+Builder.load_file('../kv/gwfevt.kv')
+Builder.load_file('../kv/gwfghb.kv')
+Builder.load_file('../kv/gwfchd.kv')
+Builder.load_file('../kv/gwfgnc.kv')
+Builder.load_file('../kv/gwfgwt.kv')
+Builder.load_file('../kv/gwfhfb.kv')
+Builder.load_file('../kv/gwflak.kv')
+Builder.load_file('../kv/gwfmaw.kv')
+Builder.load_file('../kv/gwfmvr.kv')
+Builder.load_file('../kv/gwfnam.kv')
+Builder.load_file('../kv/gwfoc.kv')
+Builder.load_file('../kv/gwfrch.kv')
+Builder.load_file('../kv/gwfriv.kv')
+Builder.load_file('../kv/gwfsfr.kv')
+Builder.load_file('../kv/gwfsto.kv')
+Builder.load_file('../kv/gwfuzf.kv')
+Builder.load_file('../kv/gwfwel.kv')
+
+
+class tdis_interface(FloatLayout):
+	pass
 
 class gwf_interface(FloatLayout):
 	def generate_bc(self):
@@ -71,3 +94,53 @@ class gwfdrn_interface(FloatLayout):
 		self.dismiss_popup()
 
 
+class gwfevt_interface(FloatLayout):
+	pass
+
+class gwfghb_interface(FloatLayout):
+	pass
+
+class gwfchd_interface(FloatLayout):
+	pass
+
+class gwfgnc_interface(FloatLayout):
+	pass
+
+class gwfgwt_interface(FloatLayout):
+	pass
+
+class gwfhfb_interface(FloatLayout):
+	pass
+
+class gwflak_interface(FloatLayout):
+	pass
+
+class gwfmaw_interface(FloatLayout):
+	pass
+
+class gwfmvr_interface(FloatLayout):
+	pass
+
+class gwfnam_interface(FloatLayout):
+	pass
+
+class gwfoc_interface(FloatLayout):
+	pass
+
+class gwfrch_interface(FloatLayout):
+	pass
+
+class gwfriv_interface(FloatLayout):
+	pass
+
+class gwfsfr_interface(FloatLayout):
+	pass
+
+class gwfsto_interface(FloatLayout):
+	pass
+
+class gwfuzf_interface(FloatLayout):
+	pass
+
+class gwfwell_interface(FloatLayout):
+	pass

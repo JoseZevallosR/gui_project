@@ -89,6 +89,7 @@
 				size_hint: (0.1,0.05)
 				pos_hint: {'x':0,'y':0.9}
 			TextInput:
+				id: epsg_input
 				pos_hint: {'x':0.1,'y':0.9}
 			Label:
 				text: "Time Unit"
@@ -208,8 +209,8 @@
 				on_release: root.plot_mesh()
 			BoxLayout:
 				id: boxs
-				pos_hint: {'x':0.5,'y':0}
-				size_hint: (0.5,1)
+				pos_hint: {'center_x':0.75,'center_y':0.5}
+				size_hint: (0.48,0.98)
 
 	TabbedPanelItem:
 		text: 'Vertical'
@@ -296,133 +297,221 @@
 				size_hint: (0.3,0.05)
 				pos_hint: {'x':0.1,'center_y':0.95}
 
-			BoxLayout:
+			ScrollView:
+				size_hint: (0.5, 0.85)
 				pos_hint:{'x':0,'y':0.05}
-				size_hint: (0.5,0.85)
-				orientation: 'vertical'
-				Label:
-					text: 'Flow Packages'
-					size_hint: (1,0.06)
-					pos_hint: {"center_x": 0.5}
-					background_color: (1, 1, 1, 1)
-					canvas.before:
-						Color:
-							rgba: self.background_color
-						Rectangle:
-							size: self.size
-							pos: self.pos
-					color:(0,0,0,1)
-					bold: True
+				do_scroll_x: False
+        		do_scroll_y: True
 
-				GridLayout:
-					size_hint: (1,0.26)
-					cols:2
+				BoxLayout:
+					pos_hint:{'x':0,'y':0.05}
+					size_hint: (None,None)
+					size: root.width/2, root.height*1.5
+					orientation: 'vertical'
 					Label:
-						text: "GWF: Groundwater Flow"
-					CheckBox:
-						on_active: root.checkbox_gwf(self,self.active)
+						text: 'Flow Packages'
+						size_hint: (1,0.01)
+						pos_hint: {"center_x": 0.5}
+						background_color: (1, 1, 1, 1)
+						canvas.before:
+							Color:
+								rgba: self.background_color
+							Rectangle:
+								size: self.size
+								pos: self.pos
+						color:(0,0,0,1)
+						bold: True
+
+					GridLayout:
+						size_hint: (1,0.045)
+						cols:2
+						Label:
+							text: "GWF: Groundwater Flow"
+						CheckBox:
+							on_active: root.checkbox_gwf(self,self.active)
+
+						Label:
+							text: "NPF: Node Property Flow"
+						CheckBox:
+							on_active: root.checkbox_npf(self,self.active)
 
 					Label:
-						text: "NPF: Node Property Flow"
-					CheckBox:
-						on_active: root.checkbox_npf(self,self.active)
+						text: "Time dependent"
+						pos_hint: {"center_x": 0.5}
+						size_hint: (1,0.01)
+						background_color: (1, 1, 1, 1)
+						canvas.before:
+							Color:
+								rgba: self.background_color
+							Rectangle:
+								size: self.size
+								pos: self.pos
+						color:(0,0,0,1)
+						bold: True
 
-				Label:
-					text: "Boundary conditions"
-					pos_hint: {"center_x": 0.5}
-					size_hint: (1,0.06)
-					background_color: (1, 1, 1, 1)
-					canvas.before:
-						Color:
-							rgba: self.background_color
-						Rectangle:
-							size: self.size
-							pos: self.pos
-					color:(0,0,0,1)
-					bold: True
-					
-				Label:
-					text: "Specified head"
-					pos_hint: {"center_x": 0.5}
-					size_hint: (1,0.06)
-					background_color: (1, 1, 1, 1)
-					canvas.before:
-						Color:
-							rgba: self.background_color
-						Rectangle:
-							size: self.size
-							pos: self.pos
-					color:(0,0,0,1)
-					italic: True
+					GridLayout:
+						cols: 2
+						size_hint: (1,0.06)
+						Label:
+							text: "TDIS: Time discretization"
+						CheckBox:
+							on_active: root.checkbox_tdis(self,self.active)
+						Label:
+							text: "IC: Initial condition"
+						CheckBox:
+							on_active: root.checkbox_ic(self,self.active)
+						Label:
+							text: "STO: Storage"
+						CheckBox:
+							on_active: root.checkbox_sto(self,self.active)
 
-				GridLayout:
-					cols: 2
-					size_hint: (1,0.12)
 					Label:
-						text: "CHD: Time-V"
-					CheckBox:
+						text: "Outputs control"
+						pos_hint: {"center_x": 0.5}
+						size_hint: (1,0.01)
+						background_color: (1, 1, 1, 1)
+						canvas.before:
+							Color:
+								rgba: self.background_color
+							Rectangle:
+								size: self.size
+								pos: self.pos
+						color:(0,0,0,1)
+						bold: True
 
-				Label:
-					text: "Specified flux"
-					pos_hint: {"center_x": 0.5}
-					size_hint: (1,0.06)
-					background_color: (1, 1, 1, 1)
-					canvas.before:
-						Color:
-							rgba: self.background_color
-						Rectangle:
-							size: self.size
-							pos: self.pos
-					color:(0,0,0,1)
-					italic: True
+					GridLayout:
+						cols: 2
+						size_hint: (1,0.04)
+						Label:
+							text: "OC: Output control"
+						CheckBox:
+							on_active: root.checkbox_oc(self,self.active)
 
-				GridLayout:
-					cols: 2
-					size_hint: (1,0.39)
 					Label:
-						text: "RCHA: Recharge"
-					CheckBox:
-						on_active: root.checkbox_rcha(self,self.active)
-					Label:
-						text: "RCH: Recharge"
-					CheckBox:
+						text: "Boundary conditions"
+						pos_hint: {"center_x": 0.5}
+						size_hint: (1,0.01)
+						background_color: (1, 1, 1, 1)
+						canvas.before:
+							Color:
+								rgba: self.background_color
+							Rectangle:
+								size: self.size
+								pos: self.pos
+						color:(0,0,0,1)
+						bold: True
 						
 					Label:
-						text: "WELL: Well"
-					CheckBox:
+						text: "Specified head"
+						pos_hint: {"center_x": 0.5}
+						size_hint: (1,0.01)
+						background_color: (1, 1, 1, 1)
+						canvas.before:
+							Color:
+								rgba: self.background_color
+							Rectangle:
+								size: self.size
+								pos: self.pos
+						color:(0,0,0,1)
+						italic: True
 
-				Label:
-					text: "Head-Dependent"
-					pos_hint: {"center_x": 0.5}
-					size_hint: (1,0.06)
-					background_color: (1, 1, 1, 1)
-					canvas.before:
-						Color:
-							rgba: self.background_color
-						Rectangle:
-							size: self.size
-							pos: self.pos
-					color:(0,0,0,1)
-					italic: True
-
-				GridLayout:
-					cols: 2
-					size_hint: (1,0.52)
-					Label:
-						text: "DRN: Drainage"
-					CheckBox:
-						on_active: root.checkbox_drn(self,self.active)
-					Label:
-						text: "ETS: evapotranspiration"
-					CheckBox:
-						on_active: root.checkbox_evta(self,self.active)
-					Label:
-						text: "GHB: Well"
-					CheckBox:
+					GridLayout:
+						cols: 2
+						size_hint: (1,0.04)
+						Label:
+							text: "CHD: Constanat-Head"
+						CheckBox:
+							on_active: root.checkbox_chd(self,self.active)
+						Label:
+							text: "GHB: General-Head Boundary"
+						CheckBox:
+							on_active: root.checkbox_ghb(self,self.active)
 
 					Label:
-						text: "RIV: River"
-					CheckBox:
+						text: "Specified flux"
+						pos_hint: {"center_x": 0.5}
+						size_hint: (1,0.01)
+						background_color: (1, 1, 1, 1)
+						canvas.before:
+							Color:
+								rgba: self.background_color
+							Rectangle:
+								size: self.size
+								pos: self.pos
+						color:(0,0,0,1)
+						italic: True
+
+					GridLayout:
+						cols: 2
+						size_hint: (1,0.065)
+						Label:
+							text: "RCHA: Recharge-Array base"
+						CheckBox:
+							on_active: root.checkbox_rcha(self,self.active)
+						Label:
+							text: "RCH: Recharge - List base"
+						CheckBox:
+							on_active: root.checkbox_rch(self,self.active)
+							
+						Label:
+							text: "WEL: Well"
+						CheckBox:
+							on_active: root.checkbox_wel(self,self.active)
+
+					Label:
+						text: "Head-Dependent"
+						pos_hint: {"center_x": 0.5}
+						size_hint: (1,0.01)
+						background_color: (1, 1, 1, 1)
+						canvas.before:
+							Color:
+								rgba: self.background_color
+							Rectangle:
+								size: self.size
+								pos: self.pos
+						color:(0,0,0,1)
+						italic: True
+
+					GridLayout:
+						cols: 2
+						size_hint: (1,0.09)
+						Label:
+							text: "DRN: Drainage"
+						CheckBox:
+							on_active: root.checkbox_drn(self,self.active)
+						Label:
+							text: "EVT: Evapotranspiration - Array base"
+						CheckBox:
+							on_active: root.checkbox_evta(self,self.active)
+						Label:
+							text: "EVT: Evapotranspiration - List base"
+						CheckBox:
+							on_active: root.checkbox_evt(self,self.active)
+						Label:
+							text: "RIV: River"
+						CheckBox:
+							on_active: root.checkbox_riv(self,self.active)
+
+					Label:
+						text: "Advance Packages"
+						pos_hint: {"center_x": 0.5}
+						size_hint: (1,0.01)
+						background_color: (1, 1, 1, 1)
+						canvas.before:
+							Color:
+								rgba: self.background_color
+							Rectangle:
+								size: self.size
+								pos: self.pos
+						color:(0,0,0,1)
+						bold: True
+
+					GridLayout:
+						cols: 2
+						size_hint: (1,0.020)
+						Label:
+							text: "UZF: Unsaturated Zone Flow"
+						CheckBox:
 
 			Button:
 				text: "Create and Run Model"				
@@ -475,5 +564,5 @@
 			Button:
 				size_hint: (0.2, 0.05)
 				pos_hint: {"center_x": 0.5,'center_y':0.5}
-				text:'Plot 3D'
+				text:'Create heads vtk'
 				on_release: root.plot3D()

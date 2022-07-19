@@ -45,6 +45,8 @@ import flopy.plot as fplot
 from flopy.utils.gridintersect import GridIntersect
 import flopy.utils.binaryfile as bf
 import matplotlib.pyplot as plt
+from flopy.utils import HeadFile
+from flopy.export import vtk
 
 import numpy as np
 from scipy.interpolate import griddata
@@ -65,6 +67,7 @@ import pandas as pd
 #rasters
 import rasterio
 from rasterio.transform import from_origin
+import contextily as cx #background maps
 
 Builder.load_file('../kv/tabs.kv')
 
@@ -92,7 +95,49 @@ class TupacMaster(TabbedPanel):
 		self.gwfnpf_widget=gwfnpf_interface()
 		self.gwfrcha_widget=gwfrcha_interface()
 		self.gwfevta_widget= gwfevta_interface()
+		self.gwfevt_widget= gwfevt_interface()
 		self.gwfdrn_widget=gwfdrn_interface()
+		self.gwfsto_widget=gwfsto_interface()
+		self.gwfghb_widget=gwfghb_interface()
+		self.gwfchd_widget=gwfchd_interface()
+
+		self.gwfic_widget=gwfic_interface()
+		self.tdis_widget=tdis_interface()
+
+		self.gwfrch_widget=gwfrch_interface()
+		self.gwfriv_widget=gwfriv_interface()
+		self.gwfuzf_widget=gwfuzf_interface()
+		self.gwfwel_widget=gwfwell_interface()
+		self.gwfoc_widget=gwfoc_interface()
+
+
+		#Keeps track of bc set by the user for the gwf model
+		self.checkbox_BC_dict={}
+		self.checkbox_BC_dict['tdis']=False
+		self.checkbox_BC_dict['gwf']=False
+		self.checkbox_BC_dict['gwf_drn']=False
+		self.checkbox_BC_dict['gwf_evt']=False
+		self.checkbox_BC_dict['gwf_evta']=False
+		self.checkbox_BC_dict['gwf_ghb']=False
+		self.checkbox_BC_dict['gwf_chd']=False
+		self.checkbox_BC_dict['gwf_gnc']=False
+		self.checkbox_BC_dict['gwf_gwt']=False
+		self.checkbox_BC_dict['gwf_hfb']=False
+		self.checkbox_BC_dict['gwf_ic']=False
+		self.checkbox_BC_dict['gwf_lak']=False
+		self.checkbox_BC_dict['gwf_maw']=False
+		self.checkbox_BC_dict['gwf_mvr']=False
+		self.checkbox_BC_dict['gwf_nam']=False
+		self.checkbox_BC_dict['gwf_npf']=False
+		self.checkbox_BC_dict['gwf_oc']=False
+		self.checkbox_BC_dict['gwf_rch']=False
+		self.checkbox_BC_dict['gwf_rcha']=False
+		self.checkbox_BC_dict['gwf_riv']=False
+		self.checkbox_BC_dict['gwf_sfr']=False
+		self.checkbox_BC_dict['gwf_sto']=False
+		self.checkbox_BC_dict['gwf_uzf']=False
+		self.checkbox_BC_dict['gwf_wel']=False
+
 
 		#review this part for vertical mesh
 		self.offsets_layer=offsets_layers()
@@ -218,10 +263,13 @@ class TupacMaster(TabbedPanel):
 	def plot_mesh(self):
 		#checkin mesh
 		plt.gcf()
-		tgr = fgrid.VertexGrid(self.vertices, self.cell2d)
-		fig, ax = plt.subplots(1, 1, figsize=(15, 10))
-		pmv = fplot.PlotMapView(modelgrid=tgr)
-		pmv.plot_grid(ax=ax)
+		mesh=gpd.read_file(self.directory_path+'/shps/voronoiRegions.shp')
+		ax = mesh.plot(figsize=(10, 10), alpha=0.2, edgecolor='k')
+		cx.add_basemap(ax,crs=mesh.crs.to_string())
+		#tgr = fgrid.VertexGrid(self.vertices, self.cell2d)
+		#fig, ax = plt.subplots(1, 1, figsize=(15, 10))
+		#pmv = fplot.PlotMapView(modelgrid=tgr)
+		#pmv.plot_grid(ax=ax)
 		box = self.ids.boxs
 		box.clear_widgets()
 		box.add_widget(FigureCanvasKivyAgg(plt.gcf()))
@@ -296,20 +344,24 @@ class TupacMaster(TabbedPanel):
 		#clicked = True, unclicked is false
 		
 		if value == True:
+			self.checkbox_BC_dict['gwf']=True
 			self.ids.boundary_box.clear_widgets()
 			self.ids.boundary_box.add_widget(self.gwf_widget)
 		else:
+			self.checkbox_BC_dict['gwf']=False
 			self.ids.boundary_box.clear_widgets()
 		pass
 	def checkbox_npf(self,instance,value):
 		#clicked = True, unclicked = false
 
 		if value == True:
-			self.ids.boundary_box.clear_widgets()
+			self.checkbox_BC_dict['gwf_npf']=True
 			#displaying the number of properties necessary for the model
+			self.ids.boundary_box.clear_widgets()
 			self.gwfnpf_widget.ids.npf_box.add_widget(self.npf_properties)
 			self.ids.boundary_box.add_widget(self.gwfnpf_widget)
 		else:
+			self.checkbox_BC_dict['gwf_npf']=False
 			self.ids.boundary_box.clear_widgets()
 			self.gwfnpf_widget.ids.npf_box.clear_widgets()
 		pass
@@ -317,31 +369,171 @@ class TupacMaster(TabbedPanel):
 		#clicked = True, unclicked = false
 		
 		if value == True:
+			self.checkbox_BC_dict['gwf_rcha']=True
 			self.ids.boundary_box.clear_widgets()
 			self.ids.boundary_box.add_widget(self.gwfrcha_widget)
 		else:
+			self.checkbox_BC_dict['gwf_rcha']=False
 			self.ids.boundary_box.clear_widgets()
 		pass
 	def checkbox_evta(self,instance,value):
 		#clicked = True, unclicked = false
 		
 		if value == True:
+			self.checkbox_BC_dict['gwf_evta']=True
 			self.ids.boundary_box.clear_widgets()
 			self.ids.boundary_box.add_widget(self.gwfevta_widget)
 		else:
+			self.checkbox_BC_dict['gwf_evta']=False
 			self.ids.boundary_box.clear_widgets()
 		pass
+
+	def checkbox_evt(self,instance,value):
+		#clicked = True, unclicked = false
+		
+		if value == True:
+			self.checkbox_BC_dict['gwf_evt']=True
+			self.ids.boundary_box.clear_widgets()
+			self.ids.boundary_box.add_widget(self.gwfevt_widget)
+		else:
+			self.checkbox_BC_dict['gwf_evt']=False
+			self.ids.boundary_box.clear_widgets()
+		pass
+
+	def checkbox_sto(self,instance,value):
+		#clicked = True, unclicked = false
+		
+		if value == True:
+			self.checkbox_BC_dict['gwf_sto']=True
+			self.ids.boundary_box.clear_widgets()
+			self.ids.boundary_box.add_widget(self.gwfsto_widget)
+		else:
+			self.checkbox_BC_dict['gwf_sto']=False
+			self.ids.boundary_box.clear_widgets()
+		pass
+
+	def checkbox_ghb(self,instance,value):
+		#clicked = True, unclicked = false
+		
+		if value == True:
+			self.checkbox_BC_dict['gwf_ghb']=True
+			self.ids.boundary_box.clear_widgets()
+			self.ids.boundary_box.add_widget(self.gwfghb_widget)
+		else:
+			self.checkbox_BC_dict['gwf_ghb']=False
+			self.ids.boundary_box.clear_widgets()
+		pass
+
+	def checkbox_chd(self,instance,value):
+		#clicked = True, unclicked = false
+		
+		if value == True:
+			self.checkbox_BC_dict['gwf_chd']=True
+			self.ids.boundary_box.clear_widgets()
+			self.ids.boundary_box.add_widget(self.gwfchd_widget)
+		else:
+			self.checkbox_BC_dict['gwf_chd']=False
+			self.ids.boundary_box.clear_widgets()
+		pass
+
+	def checkbox_rch(self,instance,value):
+		#clicked = True, unclicked = false
+		
+		if value == True:
+			self.checkbox_BC_dict['gwf_rch']=True
+			self.ids.boundary_box.clear_widgets()
+			self.ids.boundary_box.add_widget(self.gwfrch_widget)
+		else:
+			self.checkbox_BC_dict['gwf_rch']=False
+			self.ids.boundary_box.clear_widgets()
+		pass
+
+	def checkbox_riv(self,instance,value):
+		#clicked = True, unclicked = false
+		
+		if value == True:
+			self.checkbox_BC_dict['gwf_riv']=True
+			self.ids.boundary_box.clear_widgets()
+			self.ids.boundary_box.add_widget(self.gwfriv_widget)
+		else:
+			self.checkbox_BC_dict['gwf_riv']=False
+			self.ids.boundary_box.clear_widgets()
+		pass
+
+	def checkbox_uzf(self,instance,value):
+		#clicked = True, unclicked = false
+		
+		if value == True:
+			self.checkbox_BC_dict['gwf_uzf']=True
+			self.ids.boundary_box.clear_widgets()
+			self.ids.boundary_box.add_widget(self.gwfuzf_widget)
+		else:
+			self.checkbox_BC_dict['gwf_uzf']=False
+			self.ids.boundary_box.clear_widgets()
+		pass
+
+	def checkbox_wel(self,instance,value):
+		#clicked = True, unclicked = false
+		
+		if value == True:
+			self.checkbox_BC_dict['gwf_wel']=True
+			self.ids.boundary_box.clear_widgets()
+			self.ids.boundary_box.add_widget(self.gwfwel_widget)
+		else:
+			self.checkbox_BC_dict['gwf_wel']=False
+			self.ids.boundary_box.clear_widgets()
+		pass
+
+	def checkbox_oc(self,instance,value):
+		#clicked = True, unclicked = false
+		
+		if value == True:
+			self.checkbox_BC_dict['gwf_oc']=True
+			self.ids.boundary_box.clear_widgets()
+			self.ids.boundary_box.add_widget(self.gwfoc_widget)
+		else:
+			self.checkbox_BC_dict['gwf_oc']=False
+			self.ids.boundary_box.clear_widgets()
+		pass
+
+	def checkbox_tdis(self,instance,value):
+		#clicked = True, unclicked = false
+		
+		if value == True:
+			self.checkbox_BC_dict['tdis']=True
+			self.ids.boundary_box.clear_widgets()
+			self.ids.boundary_box.add_widget(self.tdis_widget)
+		else:
+			self.checkbox_BC_dict['tdis']=False
+			self.ids.boundary_box.clear_widgets()
+		pass
+
+	def checkbox_ic(self,instance,value):
+		#clicked = True, unclicked = false
+		
+		if value == True:
+			self.checkbox_BC_dict['gwf_ic']=True
+			self.ids.boundary_box.clear_widgets()
+			self.ids.boundary_box.add_widget(self.gwfic_widget)
+		else:
+			self.checkbox_BC_dict['gwf_ic']=False
+			self.ids.boundary_box.clear_widgets()
+		pass
+
 	def checkbox_drn(self,instance,value):
 		#clicked = True, unclicked = false
 		
 		if value == True:
+			self.checkbox_BC_dict['gwf_drn']=True
 			self.ids.boundary_box.clear_widgets()
 			self.ids.boundary_box.add_widget(self.gwfdrn_widget)
 		else:
+			self.checkbox_BC_dict['gwf_drn']=False
 			self.ids.boundary_box.clear_widgets()
 		pass
 
 	def spinner_clicked(self,value):
+		#check this later for displaying dropdown option values
 		print(value)
 
 
@@ -372,11 +564,7 @@ class TupacMaster(TabbedPanel):
 
 		sim = flopy.mf6.MFSimulation(sim_name=model_name, version='mf6', exe_name=exe_name,sim_ws=model_ws)
 
-		# create tdis package
-		tdis_rc = [(1.0, 1, 1.0)]
-		nper=len(tdis_rc)
-		tdis = flopy.mf6.ModflowTdis(sim, nper=nper, time_units='seconds',perioddata=tdis_rc)
-
+		
 		# create iterative model solution and register the gwf model with it
 		ims = flopy.mf6.ModflowIms(sim, linear_acceleration='BICGSTAB')
 		# create gwf model
@@ -386,41 +574,82 @@ class TupacMaster(TabbedPanel):
 		nlay = int(self.ids.number_layers.text)
 		disv = flopy.mf6.ModflowGwfdisv(gwf, nlay=nlay, ncpl=self.ncpl,top=self.mtop, botm=self.zbot,nvert=self.nvert, vertices=self.vertices,cell2d=self.cell2d)
 
+		if self.checkbox_BC_dict['gwf_npf']==True:
+			Kx = [float(self.gwfnpf_widget.ids['k_x'+ str(i+1)].text) for i in range(nlay)] #take the values from widget
+			icelltype = [int(self.gwfnpf_widget.ids['type_i'+ str(i+1)].text) for i in range(nlay)]
+			npf = flopy.mf6.ModflowGwfnpf(gwf,save_specific_discharge=True,icelltype=icelltype,k=Kx)
+
+		if self.checkbox_BC_dict['tdis']==True:
+			pass
+
+		# create tdis package
+		tdis_rc = [(1.0, 1, 1.0)]
+		nper=len(tdis_rc)
+		tdis = flopy.mf6.ModflowTdis(sim, nper=nper, time_units='seconds',perioddata=tdis_rc)
+
+		if self.checkbox_BC_dict['gwf_ic']==True:
+			pass
 		ic = flopy.mf6.ModflowGwfic(gwf, strt=np.stack([self.mtop for i in range(nlay)]))
 
-		#Kx = [4E-4,5E-6,1E-6,9E-7,5E-7]
-		Kx = [float(self.gwfnpf_widget.ids['k_x'+ str(i+1)].text) for i in range(nlay)] #take the values from widget
-		icelltype = [int(self.gwfnpf_widget.ids['type_i'+ str(i+1)].text) for i in range(nlay)]#[1,1,0,0,0]
-		npf = flopy.mf6.ModflowGwfnpf(gwf,save_specific_discharge=True,icelltype=icelltype,k=Kx)
+		if self.checkbox_BC_dict['gwf_sto']==True:
+			pass
 
-		#data from gui
-		rchr = float(self.gwfrcha_widget.ids['rcha_rate'].text)#0.15/365/86400
-		rch = flopy.mf6.ModflowGwfrcha(gwf, recharge=rchr)
+		if self.checkbox_BC_dict['gwf_oc']==True:
+			pass
 
-		#data from gui
-		evtr = float(self.gwfevta_widget.ids['evta_rate'].text)#1.2/365/86400
-		evt = flopy.mf6.ModflowGwfevta(gwf,ievt=1,surface=self.mtop,rate=evtr,depth=1.0)
+		if self.checkbox_BC_dict['gwf_chd']==True:
+			pass
 
-		tgr = fgrid.VertexGrid(self.vertices, self.cell2d)
+		if self.checkbox_BC_dict['gwf_ghb']==True:
+			pass
 
-		ix2 = GridIntersect(tgr)
-		#data from gui
-		rios=gpd.read_file(self.gwfdrn_widget.ids['drain_shape'].text) #river layer
-		list_rivers=[]
-		for i in range(rios.shape[0]):
-		    
-		    list_rivers.append(rios['geometry'].loc[i])
-		    
-		mls = MultiLineString(lines=list_rivers)
-		#intersec rivers with our grid
-		result=ix2.intersect(mls)
-		#stress_period_data : [cellid, elev, cond, aux, boundname]
-		drain_list = []
-		for i in result.cellids:
-		    drain_list.append([0,i,self.mtop[i],0.001])
-		drain_spd = {0:drain_list}
-		drn = flopy.mf6.ModflowGwfdrn(gwf,stress_period_data=drain_spd)
+		if self.checkbox_BC_dict['gwf_rcha']==True:
+			rchr = float(self.gwfrcha_widget.ids['rcha_rate'].text)
+			rch = flopy.mf6.ModflowGwfrcha(gwf, recharge=rchr)
 
+		if self.checkbox_BC_dict['gwf_rch']==True:
+			pass
+
+		if self.checkbox_BC_dict['gwf_wel']==True:
+			pass
+
+		##### Head - Dependent #####
+		if self.checkbox_BC_dict['gwf_drn']==True:
+
+			tgr = fgrid.VertexGrid(self.vertices, self.cell2d)
+			ix2 = GridIntersect(tgr)
+			#data from gui
+			rios=gpd.read_file(self.gwfdrn_widget.ids['drain_shape'].text) #river layer
+			list_rivers=[]
+			for i in range(rios.shape[0]):
+			    
+			    list_rivers.append(rios['geometry'].loc[i])
+			    
+			mls = MultiLineString(lines=list_rivers)
+			#intersec rivers with our grid
+			result=ix2.intersect(mls)
+			#stress_period_data : [cellid, elev, cond, aux, boundname]
+			drain_list = []
+			for i in result.cellids:
+			    drain_list.append([0,i,self.mtop[i],0.001])
+			drain_spd = {0:drain_list}
+			drn = flopy.mf6.ModflowGwfdrn(gwf,stress_period_data=drain_spd)
+
+		if self.checkbox_BC_dict['gwf_evta']==True:
+			evtr = float(self.gwfevta_widget.ids['evta_rate'].text)#1.2/365/86400
+			evt = flopy.mf6.ModflowGwfevta(gwf,ievt=1,surface=self.mtop,rate=evtr,depth=1.0)
+
+		if self.checkbox_BC_dict['gwf_evt']==True:
+			pass
+
+		if self.checkbox_BC_dict['gwf_riv']==True:
+			pass
+
+		##### Advance Package #####
+		if self.checkbox_BC_dict['gwf_uzf']==True:
+			pass
+
+		print(self.checkbox_BC_dict)
 
 		hname = '{}.hds'.format(model_name)
 		cname = '{}.cbc'.format(model_name)
@@ -512,6 +741,23 @@ class TupacMaster(TabbedPanel):
 		print(self.gwfrcha_widget.ids)
 		print(self.gwfevta_widget.ids)
 		print(self.gwfdrn_widget.ids)
+
+		#export heads to vtk format
+		model_name = self.ids.model_name.text
+		model_ws = self.directory_path+'/model'
+
+
+		head_vtk_path=self.directory_path+'/vtk'
+
+		head_file = os.path.join(model_ws, model_name+".hds")
+		hds = HeadFile(head_file)
+
+
+		# create the vtk object and export heads
+		vtkobj = vtk.Vtk(self.gwf, xml=True, pvd=False, vertical_exageration=1)
+		vtkobj.add_heads(hds)
+		vtkobj.write(os.path.join(head_vtk_path,"Heads_VTK","regional_model_head.vtu"))
+
 
 
 	
